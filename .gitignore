@@ -7,3 +7,6 @@ dist-ssr
 .idea
 .vscode
 *.sw?
+
+# Local Netlify folder
+.netlify

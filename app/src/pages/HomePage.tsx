@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Icon } from '../components/Icon';
 import styles from './HomePage.module.css';
 

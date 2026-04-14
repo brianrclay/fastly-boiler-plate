@@ -352,7 +352,7 @@ const configNavItems = [
   { id: 'security', label: 'Security', expandable: true },
 ];
 
-function ConfigurationContent({ serviceName }: { serviceName: string }) {
+function ConfigurationContent({ serviceName: _serviceName }: { serviceName: string }) {
   const [activeSection, setActiveSection] = useState('domains');
   const [domainSearch, setDomainSearch] = useState('');
 
