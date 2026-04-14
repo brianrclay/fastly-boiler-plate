@@ -1,0 +1,564 @@
+/*
+ * Fastly Uniform Design Tokens
+ * Source: @fastly/beacon-tokens (aspen theme)
+ * Generated from: packages/beacon-tokens/dist/aspen.css
+ *
+ * Structure:
+ *   1. Primitives — raw color palette, sizing scale, z-index, motion, shadows, typography
+ *   2. Semantic (light) — purpose-driven tokens for the default (light) theme
+ *   3. Semantic (dark) — dark-mode overrides
+ *   4. Aliases — short names used throughout this project, mapped to Uniform tokens
+ */
+
+/* ============================================================
+   1. PRIMITIVES
+   ============================================================ */
+:root {
+  /* --- Color Palette --- */
+  --COLOR--blue--0: #ffffff;
+  --COLOR--blue--10: #f0f7ff;
+  --COLOR--blue--20: #d1e8ff;
+  --COLOR--blue--30: #9eceff;
+  --COLOR--blue--40: #51a7ff;
+  --COLOR--blue--50: #0580ff;
+  --COLOR--blue--60: #0067d1;
+  --COLOR--blue--70: #004e9e;
+  --COLOR--blue--80: #00356b;
+  --COLOR--blue--90: #002142;
+  --COLOR--blue--100: #000000;
+
+  --COLOR--gray--0: #ffffff;
+  --COLOR--gray--10: #f3f4f6;
+  --COLOR--gray--20: #dce0e4;
+  --COLOR--gray--30: #bac1c9;
+  --COLOR--gray--40: #9ea8b2;
+  --COLOR--gray--50: #818e9c;
+  --COLOR--gray--60: #677483;
+  --COLOR--gray--70: #515b66;
+  --COLOR--gray--80: #3a424a;
+  --COLOR--gray--90: #24282d;
+  --COLOR--gray--100: #121417;
+
+  --COLOR--green--0: #ffffff;
+  --COLOR--green--10: #f2fcf2;
+  --COLOR--green--20: #c1eebd;
+  --COLOR--green--30: #8fe088;
+  --COLOR--green--40: #5dd354;
+  --COLOR--green--50: #39b52f;
+  --COLOR--green--60: #2f9527;
+  --COLOR--green--70: #25741e;
+  --COLOR--green--80: #1a5416;
+  --COLOR--green--90: #10330d;
+  --COLOR--green--100: #000000;
+
+  --COLOR--red--0: #ffffff;
+  --COLOR--red--10: #fef1f1;
+  --COLOR--red--20: #fcbfbb;
+  --COLOR--red--30: #f87f77;
+  --COLOR--red--40: #f5483d;
+  --COLOR--red--50: #e9190c;
+  --COLOR--red--60: #bd140a;
+  --COLOR--red--70: #921008;
+  --COLOR--red--80: #660b05;
+  --COLOR--red--90: #3a0603;
+  --COLOR--red--100: #000000;
+
+  --COLOR--yellow--0: #ffffff;
+  --COLOR--yellow--10: #fff5e0;
+  --COLOR--yellow--20: #ffe1a8;
+  --COLOR--yellow--30: #ffce70;
+  --COLOR--yellow--40: #ffbb38;
+  --COLOR--yellow--50: #ffa800;
+  --COLOR--yellow--60: #cc8600;
+  --COLOR--yellow--70: #996500;
+  --COLOR--yellow--80: #664300;
+  --COLOR--yellow--90: #332200;
+  --COLOR--yellow--100: #000000;
+
+  /* --- Data Visualization --- */
+  --COLOR--data-viz--one: #008885;
+  --COLOR--data-viz--two: #33bda0;
+  --COLOR--data-viz--three: #fddfb3;
+  --COLOR--data-viz--four: #ff9da0;
+  --COLOR--data-viz--five: #88dbf2;
+  --COLOR--data-viz--six: #008a6d;
+  --COLOR--data-viz--seven: #b280d8;
+  --COLOR--data-viz--eight: #006a8d;
+  --COLOR--data-viz--nine: #dcb9f6;
+  --COLOR--data-viz--ten: #ea8446;
+  --COLOR--data-viz--eleven: #a24271;
+  --COLOR--data-viz--twelve: #98eda1;
+
+  /* --- Sizing Scale --- */
+  --LAYOUT--size--0: 0;
+  --LAYOUT--size--1: 0.0625rem;
+  --LAYOUT--size--2: 0.125rem;
+  --LAYOUT--size--4: 0.25rem;
+  --LAYOUT--size--6: 0.375rem;
+  --LAYOUT--size--8: 0.5rem;
+  --LAYOUT--size--10: 0.625rem;
+  --LAYOUT--size--12: 0.75rem;
+  --LAYOUT--size--14: 0.875rem;
+  --LAYOUT--size--16: 1rem;
+  --LAYOUT--size--18: 1.125rem;
+  --LAYOUT--size--20: 1.25rem;
+  --LAYOUT--size--24: 1.5rem;
+  --LAYOUT--size--28: 1.75rem;
+  --LAYOUT--size--30: 1.875rem;
+  --LAYOUT--size--32: 2rem;
+  --LAYOUT--size--36: 2.25rem;
+  --LAYOUT--size--40: 2.5rem;
+  --LAYOUT--size--48: 3rem;
+  --LAYOUT--size--64: 4rem;
+  --LAYOUT--size--80: 5rem;
+  --LAYOUT--size--96: 6rem;
+  --LAYOUT--size--160: 10rem;
+
+  /* --- Border --- */
+  --LAYOUT--border-width--sm: 0.0625rem;
+  --LAYOUT--border-width--md: 0.125rem;
+  --LAYOUT--border-width--lg: 0.25rem;
+  --LAYOUT--border-radius--sm: 0.125rem;
+  --LAYOUT--border-radius--md: 0.25rem;
+  --LAYOUT--border-radius--lg: 0.5rem;
+  --LAYOUT--border-radius--xl: 1rem;
+  --LAYOUT--border-radius--round: 625rem;
+
+  /* --- Breakpoints --- */
+  --LAYOUT--breakpoint--tablet--up: (min-width: 768px);
+  --LAYOUT--breakpoint--tablet--down: (max-width: 767px);
+  --LAYOUT--breakpoint--laptop--up: (min-width: 1200px);
+  --LAYOUT--breakpoint--laptop--down: (max-width: 1200px);
+  --LAYOUT--breakpoint--desktop--up: (min-width: 1440px);
+  --LAYOUT--breakpoint--desktop--down: (max-width: 1440px);
+
+  /* --- Spacing --- */
+  --LAYOUT--spacing--1: 0.125rem;
+  --LAYOUT--spacing--2: 0.25rem;
+  --LAYOUT--spacing--3: 0.5rem;
+  --LAYOUT--spacing--4: 0.75rem;
+  --LAYOUT--spacing--5: 1rem;
+  --LAYOUT--spacing--6: 1.5rem;
+  --LAYOUT--spacing--7: 2rem;
+  --LAYOUT--spacing--8: 2.5rem;
+  --LAYOUT--spacing--9: 3rem;
+  --LAYOUT--spacing--10: 4rem;
+  --LAYOUT--spacing--11: 5rem;
+  --LAYOUT--spacing--12: 6rem;
+  --LAYOUT--spacing--13: 10rem;
+
+  /* --- Z-Index Layers --- */
+  --LAYOUT--z-index--0: 0;
+  --LAYOUT--z-index--1: 1;
+  --LAYOUT--z-index--10: 100;
+  --LAYOUT--z-index--20: 200;
+  --LAYOUT--z-index--30: 300;
+  --LAYOUT--z-index--40: 400;
+  --LAYOUT--z-index--50: 500;
+  --LAYOUT--z-index--60: 600;
+  --LAYOUT--z-index--70: 700;
+  --LAYOUT--z-index--80: 800;
+  --LAYOUT--z-index--90: 900;
+  --LAYOUT--z-index--100: 1000;
+  --LAYOUT--layer--nadir: -999;
+  --LAYOUT--layer--submask: 100;
+  --LAYOUT--layer--mask: 200;
+  --LAYOUT--layer--nav: 400;
+  --LAYOUT--layer--popover: 600;
+  --LAYOUT--layer--scrim: 800;
+  --LAYOUT--layer--modal: 900;
+  --LAYOUT--layer--drawer: 900;
+  --LAYOUT--layer--apex: 1000;
+
+  /* --- Motion --- */
+  --MOTION--animation-duration--80: 80ms;
+  --MOTION--animation-duration--130: 130ms;
+  --MOTION--animation-duration--210: 210ms;
+  --MOTION--animation-timing-function--default: cubic-bezier(0.42, 0, 0.58, 1);
+  --MOTION--animation-duration--efficient: 80ms;
+  --MOTION--animation-duration--practical: 130ms;
+  --MOTION--animation-duration--expressive: 210ms;
+  --MOTION--animation-timing-function--responsive: cubic-bezier(0.42, 0, 0.58, 1);
+  --MOTION--animation--efficient: 80ms cubic-bezier(0.42, 0, 0.58, 1) 0;
+  --MOTION--animation--practical: 130ms cubic-bezier(0.42, 0, 0.58, 1) 0;
+  --MOTION--animation--expressive: 210ms cubic-bezier(0.42, 0, 0.58, 1) 0;
+
+  /* --- Shadows --- */
+  --SHADOW--color--primary: rgba(11, 13, 14, 0.25);
+  --SHADOW--color--secondary: rgba(11, 13, 14, 0.35);
+  --SHADOW--shadow--1: 0 1px 2px rgba(11, 13, 14, 0.35);
+  --SHADOW--shadow--2: 0 2px 4px rgba(11, 13, 14, 0.25);
+  --SHADOW--shadow--3: 0 4px 8px rgba(11, 13, 14, 0.25);
+  --SHADOW--shadow--4: 0 8px 16px rgba(11, 13, 14, 0.25);
+  --SHADOW--shadow--5: 0 16px 32px rgba(11, 13, 14, 0.25);
+
+  /* --- Typography --- */
+  --TYPOGRAPHY--font-family--inter: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  --TYPOGRAPHY--font-family--sfmono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+  --TYPOGRAPHY--font-family--monospace: 'IBMPlexMono', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+  --TYPOGRAPHY--font-weight--regular: 400;
+  --TYPOGRAPHY--font-weight--semi-bold: 600;
+  --TYPOGRAPHY--font-weight--bold: 700;
+  --TYPOGRAPHY--font-weight--extra-bold: 800;
+
+  /* Headings */
+  --TYPOGRAPHY--heading--font-size--xxl: 2rem;
+  --TYPOGRAPHY--heading--font-size--xl: 1.5rem;
+  --TYPOGRAPHY--heading--font-size--lg: 1.25rem;
+  --TYPOGRAPHY--heading--font-size--md: 1rem;
+  --TYPOGRAPHY--heading--font-size--sm: 0.875rem;
+  --TYPOGRAPHY--heading--font-size--xs: 0.75rem;
+  --TYPOGRAPHY--heading--line-height--xxl: 2.5rem;
+  --TYPOGRAPHY--heading--line-height--xl: 2rem;
+  --TYPOGRAPHY--heading--line-height--lg: 1.75rem;
+  --TYPOGRAPHY--heading--line-height--md: 1.5rem;
+  --TYPOGRAPHY--heading--line-height--sm: 1.25rem;
+  --TYPOGRAPHY--heading--line-height--xs: 1rem;
+  --TYPOGRAPHY--heading--font--xxl: 800 2rem/2.5rem var(--TYPOGRAPHY--font-family--inter);
+  --TYPOGRAPHY--heading--font--xl: 700 1.5rem/2rem var(--TYPOGRAPHY--font-family--inter);
+  --TYPOGRAPHY--heading--font--lg: 700 1.25rem/1.75rem var(--TYPOGRAPHY--font-family--inter);
+  --TYPOGRAPHY--heading--font--md: 700 1rem/1.5rem var(--TYPOGRAPHY--font-family--inter);
+  --TYPOGRAPHY--heading--font--sm: 700 0.875rem/1.25rem var(--TYPOGRAPHY--font-family--inter);
+  --TYPOGRAPHY--heading--font--xs: 700 0.75rem/1rem var(--TYPOGRAPHY--font-family--inter);
+
+  /* Body type */
+  --TYPOGRAPHY--type--font-size--xl: 1.125rem;
+  --TYPOGRAPHY--type--font-size--lg: 1rem;
+  --TYPOGRAPHY--type--font-size--md: 0.875rem;
+  --TYPOGRAPHY--type--font-size--sm: 0.75rem;
+  --TYPOGRAPHY--type--font-size--xs: 0.625rem;
+  --TYPOGRAPHY--type--line-height--xl: 1.75rem;
+  --TYPOGRAPHY--type--line-height--lg: 1.5rem;
+  --TYPOGRAPHY--type--line-height--md: 1.25rem;
+  --TYPOGRAPHY--type--line-height--sm: 1.25rem;
+  --TYPOGRAPHY--type--line-height--xs: 1rem;
+  --TYPOGRAPHY--type--font--xl: 400 1.125rem/1.75rem var(--TYPOGRAPHY--font-family--inter);
+  --TYPOGRAPHY--type--font--xl--semi-bold: 600 1.125rem/1.75rem var(--TYPOGRAPHY--font-family--inter);
+  --TYPOGRAPHY--type--font--lg: 400 1rem/1.5rem var(--TYPOGRAPHY--font-family--inter);
+  --TYPOGRAPHY--type--font--lg--semi-bold: 600 1rem/1.5rem var(--TYPOGRAPHY--font-family--inter);
+  --TYPOGRAPHY--type--font--md: 400 0.875rem/1.25rem var(--TYPOGRAPHY--font-family--inter);
+  --TYPOGRAPHY--type--font--md--semi-bold: 600 0.875rem/1.25rem var(--TYPOGRAPHY--font-family--inter);
+  --TYPOGRAPHY--type--font--sm: 400 0.75rem/1.25rem var(--TYPOGRAPHY--font-family--inter);
+  --TYPOGRAPHY--type--font--sm--semi-bold: 600 0.75rem/1.25rem var(--TYPOGRAPHY--font-family--inter);
+  --TYPOGRAPHY--type--font--xs: 400 0.625rem/1rem var(--TYPOGRAPHY--font-family--inter);
+  --TYPOGRAPHY--type--font--xs--semi-bold: 600 0.625rem/1rem var(--TYPOGRAPHY--font-family--inter);
+
+  /* Monospace */
+  --TYPOGRAPHY--monospace--font--lg: 400 1rem/1.75rem var(--TYPOGRAPHY--font-family--monospace);
+  --TYPOGRAPHY--monospace--font--md: 400 0.875rem/1.5rem var(--TYPOGRAPHY--font-family--monospace);
+  --TYPOGRAPHY--monospace--font--sm: 400 0.75rem/1.25rem var(--TYPOGRAPHY--font-family--monospace);
+  --TYPOGRAPHY--monospace--font--xs: 400 0.625rem/1rem var(--TYPOGRAPHY--font-family--monospace);
+
+  /* Letter spacing */
+  --TYPOGRAPHY--letter-spacing--lg: 0.75%;
+  --TYPOGRAPHY--letter-spacing--md: 0.5%;
+  --TYPOGRAPHY--letter-spacing--sm: 0.25%;
+  --TYPOGRAPHY--letter-spacing--xs: 0.15%;
+
+  /* ============================================================
+     2. SEMANTIC TOKENS — Light (default)
+     ============================================================ */
+
+  /* --- Brand --- */
+  --COLOR--logo--primary: #e9190c;
+
+  /* --- Scrim / Overlay --- */
+  --COLOR--scrim--primary: rgba(18, 20, 23, 0.25);
+  --COLOR--scrim--secondary: rgba(18, 20, 23, 0.3);
+
+  /* --- Signal --- */
+  --COLOR--signal--custom: #ffddde;
+  --COLOR--signal--attack: #e4d3f1;
+  --COLOR--signal--informational: #b8e8de;
+  --COLOR--signal--anomaly: #f8d4be;
+
+  /* --- Action --- */
+  --COLOR--action--border: #0067d1;
+  --COLOR--action--border--hover: #004e9e;
+  --COLOR--action--focus: #9eceff;
+  --COLOR--action--surface: #0067d1;
+  --COLOR--action--surface--hover: #004e9e;
+  --COLOR--action--surface--selected: #f0f7ff;
+  --COLOR--action--surface--selected--hover: #d1e8ff;
+  --COLOR--action--text: #0067d1;
+  --COLOR--action--text--hover: #004e9e;
+  --COLOR--action--text--secondary: #51a7ff;
+
+  /* --- Border --- */
+  --COLOR--border--primary: #dce0e4;
+  --COLOR--border--primary--hover: #bac1c9;
+  --COLOR--border--secondary: #9ea8b2;
+  --COLOR--border--secondary--hover: #818e9c;
+  --COLOR--border--disabled: #818e9c;
+  --COLOR--border--inactive: #677483;
+  --COLOR--border--inactive--hover: #515b66;
+  --COLOR--border--invert: #3a424a;
+  --COLOR--border--invert--hover: #24282d;
+
+  /* --- Caution --- */
+  --COLOR--caution--border: #996500;
+  --COLOR--caution--border--hover: #664300;
+  --COLOR--caution--focus: #ffce70;
+  --COLOR--caution--surface: #fff5e0;
+  --COLOR--caution--surface--hover: #ffe1a8;
+  --COLOR--caution--surface--secondary: #ffe1a8;
+  --COLOR--caution--surface--secondary--hover: #ffce70;
+  --COLOR--caution--surface--tertiary: #996500;
+  --COLOR--caution--surface--tertiary--hover: #664300;
+  --COLOR--caution--text: #996500;
+  --COLOR--caution--text--hover: #664300;
+  --COLOR--caution--text--secondary: #cc8600;
+  --COLOR--caution--text--invert: #ffbb38;
+
+  /* --- Error --- */
+  --COLOR--error--border: #bd140a;
+  --COLOR--error--border--hover: #921008;
+  --COLOR--error--focus: #f87f77;
+  --COLOR--error--surface: #fef1f1;
+  --COLOR--error--surface--hover: #fcbfbb;
+  --COLOR--error--surface--secondary: #fcbfbb;
+  --COLOR--error--surface--secondary--hover: #f87f77;
+  --COLOR--error--surface--tertiary: #bd140a;
+  --COLOR--error--surface--tertiary--hover: #921008;
+  --COLOR--error--text: #bd140a;
+  --COLOR--error--text--hover: #921008;
+  --COLOR--error--text--secondary: #e9190c;
+  --COLOR--error--text--invert: #f5483d;
+
+  /* --- Info --- */
+  --COLOR--info--border: #0067d1;
+  --COLOR--info--border--hover: #004e9e;
+  --COLOR--info--focus: #9eceff;
+  --COLOR--info--surface: #f0f7ff;
+  --COLOR--info--surface--hover: #d1e8ff;
+  --COLOR--info--surface--secondary: #d1e8ff;
+  --COLOR--info--surface--secondary--hover: #9eceff;
+  --COLOR--info--surface--tertiary: #0067d1;
+  --COLOR--info--surface--tertiary--hover: #004e9e;
+  --COLOR--info--text: #0067d1;
+  --COLOR--info--text--hover: #004e9e;
+  --COLOR--info--text--secondary: #0580ff;
+  --COLOR--info--text--invert: #51a7ff;
+
+  /* --- Success --- */
+  --COLOR--success--border: #25741e;
+  --COLOR--success--border--hover: #1a5416;
+  --COLOR--success--focus: #8fe088;
+  --COLOR--success--surface: #f2fcf2;
+  --COLOR--success--surface--hover: #c1eebd;
+  --COLOR--success--surface--secondary: #c1eebd;
+  --COLOR--success--surface--secondary--hover: #8fe088;
+  --COLOR--success--surface--tertiary: #25741e;
+  --COLOR--success--surface--tertiary--hover: #1a5416;
+  --COLOR--success--text: #25741e;
+  --COLOR--success--text--hover: #1a5416;
+  --COLOR--success--text--secondary: #2f9527;
+  --COLOR--success--text--invert: #39b52f;
+
+  /* --- Surface --- */
+  --COLOR--surface--primary: #ffffff;
+  --COLOR--surface--primary--hover: #f3f4f6;
+  --COLOR--surface--secondary: #f3f4f6;
+  --COLOR--surface--secondary--hover: #dce0e4;
+  --COLOR--surface--tertiary: #dce0e4;
+  --COLOR--surface--tertiary--hover: #bac1c9;
+  --COLOR--surface--disabled: #dce0e4;
+  --COLOR--surface--invert: #121417;
+  --COLOR--surface--inactive: #677483;
+  --COLOR--surface--inactive--hover: #515b66;
+  --COLOR--surface--overlay: #ffffff;
+  --COLOR--surface--overlay--hover: #f3f4f6;
+
+  /* --- Text --- */
+  --COLOR--text--primary: #3a424a;
+  --COLOR--text--primary--hover: #24282d;
+  --COLOR--text--secondary: #677483;
+  --COLOR--text--secondary--hover: #515b66;
+  --COLOR--text--disabled: #818e9c;
+  --COLOR--text--invert: #ffffff;
+
+  /* ============================================================
+     3. ALIASES — backward-compatible short names for this project
+     ============================================================ */
+  --color-brand-fastly: #ff282d;
+
+  /* Primitive color aliases */
+  --color-blue-50: var(--COLOR--blue--50);
+  --color-blue-60: var(--COLOR--blue--60);
+  --color-blue-70: var(--COLOR--blue--70);
+  --color-gray-20: var(--COLOR--gray--20);
+  --color-gray-30: var(--COLOR--gray--30);
+  --color-gray-40: var(--COLOR--gray--40);
+  --color-gray-50: var(--COLOR--gray--50);
+  --color-gray-60: var(--COLOR--gray--60);
+  --color-gray-80: var(--COLOR--gray--80);
+
+  --font-family-inter: var(--TYPOGRAPHY--font-family--inter);
+  --font-family-mono: var(--TYPOGRAPHY--font-family--monospace);
+
+  --spacing-0: 0px;
+  --spacing-1: 2px;
+  --spacing-2: 4px;
+  --spacing-3: 8px;
+  --spacing-4: 12px;
+  --spacing-5: 16px;
+  --spacing-6: 24px;
+  --spacing-7: 32px;
+  --spacing-8: 40px;
+  --spacing-9: 48px;
+  --spacing-10: 64px;
+  --spacing-11: 80px;
+  --spacing-12: 96px;
+
+  --radius-xs: 0px;
+  --radius-sm: var(--LAYOUT--border-radius--sm);
+  --radius-md: var(--LAYOUT--border-radius--md);
+  --radius-lg: var(--LAYOUT--border-radius--lg);
+  --radius-xl: var(--LAYOUT--border-radius--xl);
+
+  --shadow-1: var(--SHADOW--shadow--1);
+  --shadow-2: var(--SHADOW--shadow--2);
+  --shadow-3: var(--SHADOW--shadow--3);
+  --shadow-4: var(--SHADOW--shadow--4);
+  --shadow-5: var(--SHADOW--shadow--5);
+
+  --surface-primary: var(--COLOR--surface--primary);
+  --surface-secondary: var(--COLOR--surface--secondary);
+  --surface-overlay: var(--COLOR--surface--overlay);
+  --surface-selected: var(--COLOR--action--surface--selected);
+  --surface-selected-hover: var(--COLOR--action--surface--selected--hover);
+  --surface-hover: var(--COLOR--surface--primary--hover);
+  --surface-scrim: var(--COLOR--scrim--primary);
+
+  --text-primary: var(--COLOR--text--primary);
+  --text-secondary: var(--COLOR--text--secondary);
+  --text-action: var(--COLOR--action--text);
+  --text-action-hover: var(--COLOR--action--text--hover);
+
+  --border-primary: var(--COLOR--border--primary);
+  --border-input: var(--COLOR--border--secondary);
+
+  --transition-fast: 80ms cubic-bezier(0.42, 0, 0.58, 1);
+  --transition-default: 130ms cubic-bezier(0.42, 0, 0.58, 1);
+  --transition-slow: 210ms cubic-bezier(0.42, 0, 0.58, 1);
+}
+
+/* ============================================================
+   4. SEMANTIC TOKENS — Dark mode overrides
+   ============================================================ */
+[data-theme="dark"] {
+  /* --- Scrim --- */
+  --COLOR--scrim--primary: rgba(18, 20, 23, 0.75);
+  --COLOR--scrim--secondary: rgba(18, 20, 23, 0.8);
+
+  /* --- Signal --- */
+  --COLOR--signal--custom: #654447;
+  --COLOR--signal--attack: #4a3a5b;
+  --COLOR--signal--informational: #1e4f47;
+  --COLOR--signal--anomaly: #5e3b27;
+
+  /* --- Action --- */
+  --COLOR--action--border: #51a7ff;
+  --COLOR--action--border--hover: #9eceff;
+  --COLOR--action--focus: #0067d1;
+  --COLOR--action--surface: #0580ff;
+  --COLOR--action--surface--hover: #51a7ff;
+  --COLOR--action--surface--selected: #002142;
+  --COLOR--action--surface--selected--hover: #00356b;
+  --COLOR--action--text: #51a7ff;
+  --COLOR--action--text--hover: #9eceff;
+  --COLOR--action--text--secondary: #0580ff;
+
+  /* --- Border --- */
+  --COLOR--border--primary: #3a424a;
+  --COLOR--border--primary--hover: #515b66;
+  --COLOR--border--secondary: #677483;
+  --COLOR--border--secondary--hover: #818e9c;
+  --COLOR--border--disabled: #818e9c;
+  --COLOR--border--inactive: #677483;
+  --COLOR--border--inactive--hover: #9ea8b2;
+  --COLOR--border--invert: #ffffff;
+  --COLOR--border--invert--hover: #f3f4f6;
+
+  /* --- Caution --- */
+  --COLOR--caution--border: #ffa800;
+  --COLOR--caution--border--hover: #ffbb38;
+  --COLOR--caution--focus: #996500;
+  --COLOR--caution--surface: #332200;
+  --COLOR--caution--surface--hover: #664300;
+  --COLOR--caution--surface--secondary: #664300;
+  --COLOR--caution--surface--secondary--hover: #996500;
+  --COLOR--caution--surface--tertiary: #ffa800;
+  --COLOR--caution--surface--tertiary--hover: #ffbb38;
+  --COLOR--caution--text: #ffbb38;
+  --COLOR--caution--text--hover: #ffce70;
+  --COLOR--caution--text--secondary: #ffa800;
+  --COLOR--caution--text--invert: #996500;
+
+  /* --- Error --- */
+  --COLOR--error--border: #e9190c;
+  --COLOR--error--border--hover: #f5483d;
+  --COLOR--error--focus: #921008;
+  --COLOR--error--surface: #3a0603;
+  --COLOR--error--surface--hover: #660b05;
+  --COLOR--error--surface--secondary: #660b05;
+  --COLOR--error--surface--secondary--hover: #921008;
+  --COLOR--error--surface--tertiary: #f5483d;
+  --COLOR--error--surface--tertiary--hover: #e9190c;
+  --COLOR--error--text: #f5483d;
+  --COLOR--error--text--hover: #f87f77;
+  --COLOR--error--text--secondary: #e9190c;
+  --COLOR--error--text--invert: #e9190c;
+
+  /* --- Info --- */
+  --COLOR--info--border: #51a7ff;
+  --COLOR--info--border--hover: #9eceff;
+  --COLOR--info--focus: #0067d1;
+  --COLOR--info--surface: #002142;
+  --COLOR--info--surface--hover: #00356b;
+  --COLOR--info--surface--secondary: #00356b;
+  --COLOR--info--surface--secondary--hover: #004e9e;
+  --COLOR--info--surface--tertiary: #0580ff;
+  --COLOR--info--surface--tertiary--hover: #51a7ff;
+  --COLOR--info--text: #51a7ff;
+  --COLOR--info--text--hover: #9eceff;
+  --COLOR--info--text--secondary: #0580ff;
+  --COLOR--info--text--invert: #9eceff;
+
+  /* --- Success --- */
+  --COLOR--success--border: #39b52f;
+  --COLOR--success--border--hover: #5dd354;
+  --COLOR--success--focus: #25741e;
+  --COLOR--success--surface: #10330d;
+  --COLOR--success--surface--hover: #1a5416;
+  --COLOR--success--surface--secondary: #1a5416;
+  --COLOR--success--surface--secondary--hover: #25741e;
+  --COLOR--success--surface--tertiary: #39b52f;
+  --COLOR--success--surface--tertiary--hover: #5dd354;
+  --COLOR--success--text: #39b52f;
+  --COLOR--success--text--hover: #5dd354;
+  --COLOR--success--text--secondary: #2f9527;
+  --COLOR--success--text--invert: #25741e;
+
+  /* --- Surface --- */
+  --COLOR--surface--primary: #121417;
+  --COLOR--surface--primary--hover: #24282d;
+  --COLOR--surface--secondary: #24282d;
+  --COLOR--surface--secondary--hover: #3a424a;
+  --COLOR--surface--tertiary: #3a424a;
+  --COLOR--surface--tertiary--hover: #515b66;
+  --COLOR--surface--disabled: #3a424a;
+  --COLOR--surface--invert: #ffffff;
+  --COLOR--surface--inactive: #818e9c;
+  --COLOR--surface--inactive--hover: #9ea8b2;
+  --COLOR--surface--overlay: #24282d;
+  --COLOR--surface--overlay--hover: #3a424a;
+
+  /* --- Text --- */
+  --COLOR--text--primary: #ffffff;
+  --COLOR--text--primary--hover: #f3f4f6;
+  --COLOR--text--secondary: #9ea8b2;
+  --COLOR--text--secondary--hover: #bac1c9;
+  --COLOR--text--disabled: #818e9c;
+  --COLOR--text--invert: #121417;
+}

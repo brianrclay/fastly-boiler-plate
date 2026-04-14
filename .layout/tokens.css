@@ -1,0 +1,301 @@
+:root {
+  /* === COLOURS === */
+  --color-blue-50: #0580ff;
+  --color-blue-60: #0067d1;
+  --color-gray-0: #ffffff;
+  --color-gray-10: #f3f4f6;
+  --color-gray-90: #24282d;
+  --color-gray-100: #121417;
+  --color-green-50: #39b52f;
+  --color-red-50: #e9190c;
+  --color-yellow-50: #ffa800;
+  --borderradius-borderradius-xs: 0px;
+  --borderradius-borderradius-sm: 2px;
+  --borderradius-borderradius-md: 4px;
+  --borderradius-borderradius-lg: 8px;
+  --borderradius-borderradius-xl: 16px;
+  --surface-surface--scrim: #121417;
+  --signal-signal--custom: #654447;
+  --signal-signal--attack: #4a3a5b;
+  --signal-signal--informational: #1e4f47;
+  --signal-signal--anomaly: #5e3b27;
+  --color-blue-10: #f0f7ff;
+  --color-blue-20: #d1e8ff;
+  --color-blue-30: #9eceff;
+  --color-blue-40: #51a7ff;
+  --color-blue-70: #004e9e;
+  --color-blue-80: #00356b;
+  --color-blue-90: #002142;
+  --color-gray-20: #dce0e4;
+  --color-gray-30: #bac1c9;
+  --color-gray-40: #9ea8b2;
+  --color-gray-50: #818e9c;
+  --color-gray-60: #677483;
+  --color-gray-70: #515b66;
+  --color-gray-80: #3a424a;
+  --color-green-10: #f2fcf2;
+  --color-green-20: #c1eebd;
+  --color-green-30: #8fe088;
+  --color-green-40: #5dd354;
+  --color-green-60: #2f9527;
+  --color-green-70: #25741e;
+  --color-green-80: #1a5416;
+  --color-green-90: #10330d;
+  --color-red-10: #fef1f1;
+  --color-red-20: #fcbfbb;
+  --color-red-30: #f87f77;
+  --color-red-40: #f65a50;
+  --color-red-60: #bd140a;
+  --color-red-70: #921008;
+  --color-red-80: #660b05;
+  --color-red-90: #3a0603;
+  --color-yellow-10: #fff5e0;
+  --color-yellow-20: #ffe1a8;
+  --color-yellow-30: #ffce70;
+  --color-yellow-40: #ffbb38;
+  --color-yellow-60: #cc8600;
+  --color-yellow-70: #996500;
+  --color-yellow-80: #664300;
+  --color-yellow-90: #332200;
+  --color-brand-fastly: #ff282d;
+  --color-brand-signal-sciences: #fa6b0a;
+  --color-data-viz-1: #0088b5;
+  --color-data-viz-2: #33bda0;
+  --color-data-viz-3: #fddfb3;
+  --color-data-viz-4: #ff9da0;
+  --color-data-viz-5: #88dbf2;
+  --color-data-viz-6: #008a6d;
+  --color-data-viz-7: #b280d8;
+  --color-data-viz-8: #006a8d;
+  --color-data-viz-9: #dcb9f6;
+  --color-data-viz-10: #ea8446;
+  --color-data-viz-11: #a24271;
+  --color-data-viz-12: #98eda1;
+  --border-default: 1px solid var(--color-gray-20);
+  --border-strong: 1px solid var(--color-gray-30);
+  --border-subtle: 1px solid var(--color-gray-10);
+  --border-focus: 2px solid var(--color-blue-50);
+  --border-error: 1px solid var(--color-red-40);
+  --border-disabled: 1px solid var(--color-gray-20);
+  --transition-color: color var(--duration-default) var(--ease-default),
+                         background-color var(--duration-default) var(--ease-default),
+                         border-color var(--duration-default) var(--ease-default);
+
+  /* === TYPOGRAPHY === */
+  --type-small-reg: font-family: Inter; font-size: 12px; font-weight: 400; line-height: 20px; letter-spacing: 0.09px;
+  --type-xsmall-semi-bold: font-family: Inter; font-size: 10px; font-weight: 600; line-height: 16px; letter-spacing: 0.075px;
+  --monospace-small: font-family: IBM Plex Mono; font-size: 12px; font-weight: 400; line-height: 20px;
+  --type-xl-reg: font-family: Inter; font-size: 18px; font-weight: 400; line-height: 28px; letter-spacing: 0.045px;
+  --type-xl-semi-bold: font-family: Inter; font-size: 18px; font-weight: 600; line-height: 28px; letter-spacing: 0.045px;
+  --header-h6-small: font-family: Inter; font-size: 12px; font-weight: 700; line-height: 16px; letter-spacing: 0.024000000357627872px;
+  --header-h2-xxl: font-family: Inter; font-size: 24px; font-weight: 700; line-height: 32px; letter-spacing: 0.03600000143051148px;
+  --header-h4-lg: font-family: Inter; font-size: 16px; font-weight: 700; line-height: 24px; letter-spacing: 0.024000000953674317px;
+  --type-med-reg: font-family: Inter; font-size: 14px; font-weight: 400; line-height: 20px; letter-spacing: 0.07px;
+  --type-small-semi-bold: font-family: Inter; font-size: 12px; font-weight: 600; line-height: 20px; letter-spacing: 0.09px;
+  --type-med-semi-bold: font-family: Inter; font-size: 14px; font-weight: 600; line-height: 20px; letter-spacing: 0.07px;
+  --header-h3-xl: font-family: Inter; font-size: 20px; font-weight: 700; line-height: 28px; letter-spacing: 0.030000001192092896px;
+  --header-h5-med: font-family: Inter; font-size: 14px; font-weight: 700; line-height: 20px; letter-spacing: 0.028000000417232516px;
+  --header-h1-xxxl: font-family: Inter; font-size: 32px; font-weight: 800; line-height: 40px; letter-spacing: 0.048000001907348634px;
+  --type-lg-reg: font-family: Inter; font-size: 16px; font-weight: 400; line-height: 24px; letter-spacing: 0.08px;
+  --type-lg-semi-bold: font-family: Inter; font-size: 16px; font-weight: 600; line-height: 24px; letter-spacing: 0.08px;
+  --monospace-med: font-family: IBM Plex Mono; font-size: 14px; font-weight: 400; line-height: 24px;
+  --type-xsmall-reg: font-family: Inter; font-size: 10px; font-weight: 400; line-height: 16px; letter-spacing: 0.075px;
+  --monospace-lg: font-family: IBM Plex Mono; font-size: 16px; font-weight: 400; line-height: 28px;
+  --monospace-xsmall: font-family: IBM Plex Mono; font-size: 10px; font-weight: 400; line-height: 16px;
+  --font-family-inter: Inter, system-ui, sans-serif;
+  --font-family-ibm-plex-mono: 'IBM Plex Mono', monospace;
+
+  /* === SPACING === */
+  --spacing-spacing-3: 8px;
+  --spacing-spacing-5: 16px;
+  --spacing-spacing-6: 24px;
+  --spacing-spacing-7: 32px;
+  --spacing-spacing-0: 0px;
+  --spacing-spacing-1: 2px;
+  --spacing-spacing-2: 4px;
+  --spacing-spacing-4: 12px;
+  --spacing-spacing-8: 40px;
+  --spacing-spacing-9: 48px;
+  --spacing-spacing-10: 64px;
+  --spacing-spacing-11: 80px;
+  --spacing-spacing-12: 96px;
+  --spacing-spacing-13: 160px;
+
+  /* === EFFECTS === */
+  --shadow-1: 0px 1px 2px 0px rgba(11, 13, 14, 0.35);
+  --shadow-5: 0px 16px 32px 0px rgba(11, 13, 14, 0.25);
+  --shadow-4: 0px 8px 16px 0px rgba(11, 13, 14, 0.25);
+  --shadow-2: 0px 2px 4px 0px rgba(11, 13, 14, 0.25);
+  --shadow-3: 0px 4px 8px 0px rgba(11, 13, 14, 0.25);
+  --transition-opacity: opacity var(--duration-moderate) var(--ease-out);
+
+}
+
+[data-theme="light"] {
+  --surface-surface--scrim: #121417;
+  --signal-signal--custom: #ffddde;
+  --signal-signal--attack: #e4d3f1;
+  --signal-signal--informational: #b8e8de;
+  --signal-signal--anomaly: #f8d4be;
+}
+
+[data-theme="dark"] {
+  --surface-surface--scrim: #121417;
+  --signal-signal--custom: #654447;
+  --signal-signal--attack: #4a3a5b;
+  --signal-signal--informational: #1e4f47;
+  --signal-signal--anomaly: #5e3b27;
+  --surface-surface--scrim: #121417;
+  --signal-signal--custom: #654447;
+  --signal-signal--attack: #4a3a5b;
+  --signal-signal--informational: #1e4f47;
+  --signal-signal--anomaly: #5e3b27;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --surface-surface--scrim: #121417;
+    --signal-signal--custom: #654447;
+    --signal-signal--attack: #4a3a5b;
+    --signal-signal--informational: #1e4f47;
+    --signal-signal--anomaly: #5e3b27;
+    --surface-surface--scrim: #121417;
+    --signal-signal--custom: #654447;
+    --signal-signal--attack: #4a3a5b;
+    --signal-signal--informational: #1e4f47;
+    --signal-signal--anomaly: #5e3b27;
+  }
+}
+
+[data-theme="admin-light"] {
+  --surface-surface--scrim: #121417;
+  --signal-signal--custom: #ffddde;
+  --signal-signal--attack: #e4d3f1;
+  --signal-signal--informational: #b8e8de;
+  --signal-signal--anomaly: #f8d4be;
+}
+
+[data-theme="admin-dark"] {
+  --surface-surface--scrim: #121417;
+  --signal-signal--custom: #654447;
+  --signal-signal--attack: #4a3a5b;
+  --signal-signal--informational: #1e4f47;
+  --signal-signal--anomaly: #5e3b27;
+}
+
+[data-theme="desktop"] {
+  --font-family-inter: Inter;
+  --font-family-ibm-plex-mono: IBM Plex Mono;
+  --font-size-header-h1-(xxl): 32;
+  --font-size-header-h2-(xl): 24;
+  --font-size-header-h3-(lg): 20;
+  --font-size-header-h4-(md): 16;
+  --font-size-header-h5-(sm): 14;
+  --font-size-header-h6-(xs): 12;
+  --line-height-header-h1-(xxl): 40;
+  --line-height-header-h2-(xl): 32;
+  --line-height-header-h3-(lg): 28;
+  --line-height-header-h4-(md): 24;
+  --line-height-header-h5-(sm): 20;
+  --line-height-header-h6-(xs): 16;
+  --font-weight-extra-bold: Extra Bold;
+  --font-weight-bold: Bold;
+  --font-weight-semi-bold: Semi Bold;
+  --font-weight-regular: Regular;
+  --font-size-type-xl: 18;
+  --font-size-type-lg: 16;
+  --font-size-type-md: 14;
+  --font-size-type-sm: 12;
+  --font-size-type-xs: 10;
+  --line-height-type-xl: 28;
+  --line-height-type-lg: 24;
+  --line-height-type-md: 20;
+  --line-height-type-sm: 20;
+  --line-height-type-xs: 16;
+  --font-size-monospace-lg: 16;
+  --font-size-monospace-md: 14;
+  --font-size-monospace-sm: 12;
+  --font-size-monospace-xs: 10;
+  --line-height-monospace-lg: 28;
+  --line-height-monospace-md: 24;
+  --line-height-monospace-sm: 20;
+  --line-height-monospace-xs: 16;
+}
+
+[data-theme="mobile"] {
+  --font-family-inter: Inter;
+  --font-family-ibm-plex-mono: IBM Plex Mono;
+  --font-size-header-h1-(xxl): 24;
+  --font-size-header-h2-(xl): 20;
+  --font-size-header-h3-(lg): 18;
+  --font-size-header-h4-(md): 16;
+  --font-size-header-h5-(sm): 14;
+  --font-size-header-h6-(xs): 12;
+  --line-height-header-h1-(xxl): 28;
+  --line-height-header-h2-(xl): 28;
+  --line-height-header-h3-(lg): 24;
+  --line-height-header-h4-(md): 24;
+  --line-height-header-h5-(sm): 20;
+  --line-height-header-h6-(xs): 16;
+  --font-weight-extra-bold: Extra Bold;
+  --font-weight-bold: Bold;
+  --font-weight-semi-bold: Semi Bold;
+  --font-weight-regular: Regular;
+  --font-size-type-xl: 18;
+  --font-size-type-lg: 16;
+  --font-size-type-md: 14;
+  --font-size-type-sm: 12;
+  --font-size-type-xs: 10;
+  --line-height-type-xl: 28;
+  --line-height-type-lg: 24;
+  --line-height-type-md: 20;
+  --line-height-type-sm: 20;
+  --line-height-type-xs: 16;
+  --font-size-monospace-lg: 16;
+  --font-size-monospace-md: 14;
+  --font-size-monospace-sm: 12;
+  --font-size-monospace-xs: 10;
+  --line-height-monospace-lg: 28;
+  --line-height-monospace-md: 24;
+  --line-height-monospace-sm: 20;
+  --line-height-monospace-xs: 16;
+}
+
+[data-theme="tablet"] {
+  --font-family-inter: Inter;
+  --font-family-ibm-plex-mono: IBM Plex Mono;
+  --font-size-header-h1-(xxl): 24;
+  --font-size-header-h2-(xl): 20;
+  --font-size-header-h3-(lg): 18;
+  --font-size-header-h4-(md): 16;
+  --font-size-header-h5-(sm): 14;
+  --font-size-header-h6-(xs): 12;
+  --line-height-header-h1-(xxl): 28;
+  --line-height-header-h2-(xl): 28;
+  --line-height-header-h3-(lg): 24;
+  --line-height-header-h4-(md): 24;
+  --line-height-header-h5-(sm): 20;
+  --line-height-header-h6-(xs): 16;
+  --font-weight-extra-bold: Extra Bold;
+  --font-weight-bold: Bold;
+  --font-weight-semi-bold: Semi Bold;
+  --font-weight-regular: Regular;
+  --font-size-type-xl: 18;
+  --font-size-type-lg: 16;
+  --font-size-type-md: 14;
+  --font-size-type-sm: 12;
+  --font-size-type-xs: 10;
+  --line-height-type-xl: 28;
+  --line-height-type-lg: 24;
+  --line-height-type-md: 20;
+  --line-height-type-sm: 20;
+  --line-height-type-xs: 16;
+  --font-size-monospace-lg: 16;
+  --font-size-monospace-md: 14;
+  --font-size-monospace-sm: 12;
+  --font-size-monospace-xs: 10;
+  --line-height-monospace-lg: 28;
+  --line-height-monospace-md: 24;
+  --line-height-monospace-sm: 20;
+  --line-height-monospace-xs: 16;
+}

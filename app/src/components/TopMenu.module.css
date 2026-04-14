@@ -1,0 +1,251 @@
+.topMenu {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-5) var(--spacing-6);
+  background-color: var(--surface-primary);
+  border-bottom: 1px solid var(--border-primary);
+  position: relative;
+  z-index: 3;
+  width: 100%;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-5);
+  flex-shrink: 0;
+}
+
+.menuButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  color: var(--text-primary);
+  border-radius: var(--radius-md);
+  transition: background-color var(--transition-fast);
+}
+
+.menuButton:hover {
+  background-color: var(--surface-secondary);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+.separator {
+  width: 1px;
+  height: 20px;
+  background-color: var(--border-primary);
+}
+
+.companySelector {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  color: var(--text-primary);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-1) var(--spacing-2);
+  transition: background-color var(--transition-fast);
+  min-width: 0;
+}
+
+.companySelector:hover {
+  background-color: var(--surface-secondary);
+}
+
+.companyName {
+  font-family: var(--font-family-inter);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  letter-spacing: 0.07px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Caret only on desktop */
+.caretDesktop {
+  display: none;
+}
+
+/* === SEARCH BAR (desktop only, centered) === */
+.searchWrapper {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: none;
+  align-items: center;
+  gap: var(--spacing-3);
+  width: 348px;
+  height: 32px;
+  padding: var(--spacing-3) 10px var(--spacing-3) var(--spacing-3);
+  border: 1px solid var(--border-input);
+  border-radius: var(--radius-md);
+  cursor: text;
+  transition: border-color var(--transition-fast);
+}
+
+.searchWrapper:hover {
+  border-color: var(--color-gray-50);
+}
+
+.searchPlaceholder {
+  font-family: var(--font-family-inter);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: 0.07px;
+  color: var(--text-secondary);
+  flex: 1;
+}
+
+.searchShortcut {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--color-gray-30);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-family-inter);
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-5);
+}
+
+/* Feedback button - hidden on mobile */
+.feedbackButton {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  padding: var(--spacing-3) var(--spacing-4);
+  background-color: var(--surface-secondary);
+  border-radius: var(--radius-md);
+  font-family: var(--font-family-inter);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  letter-spacing: 0.07px;
+  color: var(--text-primary);
+  transition: background-color var(--transition-fast);
+}
+
+.feedbackButton:hover {
+  background-color: var(--color-gray-20);
+}
+
+.dropdownWrapper {
+  position: relative;
+}
+
+.iconButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background-color: var(--surface-secondary);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  transition: background-color var(--transition-fast);
+}
+
+.iconButton:hover {
+  background-color: var(--color-gray-20);
+}
+
+/* Search icon button - visible on tablet/mobile only */
+.searchIconButton {
+  display: flex;
+}
+
+/* Bell - hidden on mobile */
+.bellButton {
+  display: none;
+}
+
+/* App switcher - hidden on mobile */
+.appSwitcherWrapper {
+  display: none;
+}
+
+.avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background-color: var(--surface-secondary);
+  border-radius: var(--radius-xl);
+  font-family: var(--font-family-inter);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  letter-spacing: 0.08px;
+  color: var(--text-primary);
+  overflow: hidden;
+}
+
+/* === TABLET (>= 768px) === */
+@media (min-width: 768px) {
+  .left {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .companySelector {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .feedbackButton {
+    display: flex;
+  }
+
+  .bellButton {
+    display: flex;
+  }
+
+  .appSwitcherWrapper {
+    display: block;
+  }
+}
+
+/* === DESKTOP (>= 1024px) === */
+@media (min-width: 1024px) {
+  .left {
+    flex: none;
+  }
+
+  .companySelector {
+    flex: none;
+  }
+
+  .caretDesktop {
+    display: flex;
+  }
+
+  .searchWrapper {
+    display: flex;
+  }
+
+  .searchIconButton {
+    display: none;
+  }
+}

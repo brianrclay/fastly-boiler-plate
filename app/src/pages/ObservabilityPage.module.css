@@ -1,0 +1,91 @@
+.pageShell {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  /* Ensure the shell fills remaining viewport height below top menu */
+  height: calc(100vh - 64px);
+}
+
+.contentWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.pageContent {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: 100%;
+  max-width: 1464px;
+  padding: 0 var(--spacing-7);
+  padding-bottom: var(--spacing-11);
+  min-height: 928px;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 150ms ease, transform 150ms ease;
+}
+
+.pageContentHidden {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+@keyframes fadeDownIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.pageContentAnimate {
+  animation: fadeDownIn 150ms ease forwards;
+}
+
+.pageHeader {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+  padding: var(--spacing-7) 0;
+}
+
+.title {
+  font-family: var(--font-family-inter);
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 40px;
+  letter-spacing: 0.048px;
+  color: var(--text-primary);
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cardsWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+}
+
+.cardsRow {
+  display: flex;
+  gap: var(--spacing-6);
+}
+
+.card {
+  height: 121px;
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  flex: 1;
+  min-width: 0;
+}

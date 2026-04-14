@@ -1,0 +1,182 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.overlayVisible {
+  pointer-events: auto;
+  visibility: visible;
+}
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  background-color: var(--surface-scrim);
+  opacity: 0;
+  transition: opacity var(--transition-slow);
+}
+
+.overlayVisible .scrim {
+  opacity: 1;
+}
+
+.drawer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 480px;
+  max-width: 100vw;
+  background-color: var(--surface-overlay);
+  box-shadow: var(--shadow-3);
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform var(--transition-slow);
+}
+
+.drawerOpen {
+  transform: translateX(0);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-5);
+  padding: var(--spacing-6);
+}
+
+.headerTop {
+  display: flex;
+  gap: var(--spacing-5);
+  align-items: flex-start;
+}
+
+.headerText {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.title {
+  font-family: var(--font-family-inter);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 28px;
+  letter-spacing: 0.03px;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.subtitle {
+  font-family: var(--font-family-inter);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: 0.07px;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.closeButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  flex-shrink: 0;
+  transition: background-color var(--transition-fast);
+}
+
+.closeButton:hover {
+  background-color: var(--surface-hover);
+}
+
+.actions {
+  display: flex;
+  gap: var(--spacing-4);
+  align-items: flex-start;
+}
+
+.actionButton {
+  font-family: var(--font-family-inter);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  letter-spacing: 0.07px;
+  color: var(--color-gray-50);
+  border: 1px solid var(--color-gray-40);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-3) var(--spacing-5);
+  white-space: nowrap;
+  transition: background-color var(--transition-fast);
+}
+
+.actionButton:hover {
+  background-color: var(--surface-hover);
+}
+
+.actionLink {
+  font-family: var(--font-family-inter);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  letter-spacing: 0.07px;
+  color: var(--text-action);
+  padding: var(--spacing-3) var(--spacing-5);
+  white-space: nowrap;
+  border-radius: var(--radius-md);
+  transition: background-color var(--transition-fast);
+}
+
+.actionLink:hover {
+  background-color: var(--surface-hover);
+}
+
+.content {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-5);
+  padding: var(--spacing-8);
+}
+
+.emptyIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.emptyTitle {
+  font-family: var(--font-family-inter);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+  letter-spacing: 0.024px;
+  color: var(--text-primary);
+  text-align: center;
+  margin: 0;
+}
+
+.emptyDescription {
+  font-family: var(--font-family-inter);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: 0.07px;
+  color: var(--text-primary);
+  text-align: center;
+  margin: 0;
+}
