@@ -107,10 +107,15 @@ export function GlobalNav({
   const l2Data = mobileL2Target ? l2NavMap[mobileL2Target] : null;
 
   const [animating, setAnimating] = useState(false);
+  const wasOpenRef = useRef(false);
   const panelRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    if (!isOpen) {
+    if (isOpen) {
+      wasOpenRef.current = true;
+      setAnimating(false);
+    } else if (wasOpenRef.current) {
+      wasOpenRef.current = false;
       setAnimating(true);
       const el = panelRef.current;
       if (el) {
