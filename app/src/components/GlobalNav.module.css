@@ -67,8 +67,10 @@
   transition: background-color var(--transition-fast);
 }
 
-.closeButton:hover {
-  background-color: var(--surface-secondary);
+@media (hover: hover) {
+  .closeButton:hover {
+    background-color: var(--surface-secondary);
+  }
 }
 
 .headerLogo {
@@ -163,9 +165,11 @@
   transition: background-color var(--transition-fast);
 }
 
-.sectionHeader:hover {
-  background-color: var(--surface-hover);
-  color: var(--color-blue-60);
+@media (hover: hover) {
+  .sectionHeader:hover {
+    background-color: var(--surface-hover);
+    color: var(--color-blue-60);
+  }
 }
 
 .sectionLabel {
@@ -225,15 +229,17 @@
   text-align: left;
 }
 
-.menuItem:hover {
-  background-color: var(--surface-hover);
+@media (hover: hover) {
+  .menuItem:hover {
+    background-color: var(--surface-hover);
+  }
+
+  .menuItemActive:hover {
+    background-color: var(--surface-selected);
+  }
 }
 
 .menuItemActive {
-  background-color: var(--surface-selected);
-}
-
-.menuItemActive:hover {
   background-color: var(--surface-selected);
 }
 
@@ -275,16 +281,20 @@
   cursor: pointer;
 }
 
-.pinButton:hover {
-  background-color: var(--color-gray-20);
+@media (hover: hover) {
+  .pinButton:hover {
+    background-color: var(--color-gray-20);
+  }
 }
 
 .pinButtonVisible {
   opacity: 1;
 }
 
-.menuItem:hover .pinButton {
-  opacity: 1;
+@media (hover: hover) {
+  .menuItem:hover .pinButton {
+    opacity: 1;
+  }
 }
 
 /* === Mobile L2 panel === */
@@ -299,8 +309,10 @@
   transition: background-color var(--transition-fast);
 }
 
-.backButton:hover {
-  background-color: var(--surface-hover);
+@media (hover: hover) {
+  .backButton:hover {
+    background-color: var(--surface-hover);
+  }
 }
 
 .backLabel {
@@ -329,8 +341,10 @@
   transition: background-color var(--transition-fast);
 }
 
-.l2ItemButton:hover {
-  background-color: var(--surface-hover);
+@media (hover: hover) {
+  .l2ItemButton:hover {
+    background-color: var(--surface-hover);
+  }
 }
 
 .l2ItemLabel {
@@ -401,8 +415,10 @@
   transition: background-color var(--transition-fast);
 }
 
-.l2ChildItem:hover {
-  background-color: var(--surface-hover);
+@media (hover: hover) {
+  .l2ChildItem:hover {
+    background-color: var(--surface-hover);
+  }
 }
 
 /* On mobile, panel takes full width */
