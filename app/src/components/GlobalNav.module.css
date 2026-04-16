@@ -3,12 +3,10 @@
   inset: 0;
   z-index: 100;
   pointer-events: none;
-  visibility: hidden;
 }
 
 .overlayVisible {
   pointer-events: auto;
-  visibility: visible;
 }
 
 .scrim {
@@ -298,12 +296,17 @@
 }
 
 /* === Mobile L2 panel === */
+.l2MenuContent {
+  padding-top: 0;
+  padding-bottom: var(--spacing-6);
+}
+
 .backButton {
   display: flex;
   align-items: center;
-  gap: var(--spacing-3);
+  gap: var(--spacing-5);
   width: 100%;
-  padding: var(--spacing-4) var(--spacing-6);
+  padding: var(--spacing-5) var(--spacing-6);
   color: var(--text-primary);
   border-bottom: 1px solid var(--border-primary);
   transition: background-color var(--transition-fast);
@@ -335,7 +338,7 @@
   align-items: center;
   gap: var(--spacing-5);
   width: 100%;
-  padding: var(--spacing-4) var(--spacing-6);
+  padding: var(--spacing-5) var(--spacing-6);
   color: var(--text-primary);
   text-align: left;
   transition: background-color var(--transition-fast);

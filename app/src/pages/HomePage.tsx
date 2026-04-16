@@ -413,7 +413,7 @@ function ServicesCard({ onNavigate, onServiceClick }: { onNavigate?: (id: string
           <Icon name="search" size={20} style={{ color: 'var(--text-secondary)', flexShrink: 0 }} />
           <input type="text" placeholder="Search" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
         </div>
-        <div className={styles.dropdownWrapper} ref={sortDropdown.ref}>
+        <div className={`${styles.dropdownWrapper} ${styles.sortWrapper}`} ref={sortDropdown.ref}>
           <button className={styles.listSort} onClick={() => sortDropdown.setOpen(!sortDropdown.open)}>
             {sortOptions.find((o) => o.id === sortBy)?.label}
             <Icon name="chevron-down" size={20} />

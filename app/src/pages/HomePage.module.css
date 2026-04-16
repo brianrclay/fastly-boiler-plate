@@ -3,9 +3,7 @@
   flex-direction: column;
   align-items: center;
   flex: 1;
-  min-height: 0;
   width: 100%;
-  overflow-y: auto;
 }
 
 .pageContent {
@@ -175,13 +173,124 @@
 }
 
 @media (max-width: 767px) {
+  .pageContent {
+    padding: 0 var(--spacing-5);
+  }
+
   .columns {
     flex-direction: column;
+  }
+
+  .colLeft,
+  .colRight {
+    width: 100%;
+    min-width: 0;
   }
 
   .colRight {
     order: -1;
   }
+
+  /* Cards: reduce padding to 16px */
+  .listCard {
+    overflow: hidden;
+  }
+
+  .listCardHeader {
+    padding: var(--spacing-5) var(--spacing-5) 0;
+  }
+
+  .listControls {
+    padding: var(--spacing-4) var(--spacing-5);
+  }
+
+  .tabRow {
+    padding: 0 var(--spacing-5);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .tabRow::-webkit-scrollbar {
+    display: none;
+  }
+
+  .spendHeader {
+    flex-wrap: wrap;
+  }
+
+  .serviceRow {
+    padding: var(--spacing-5);
+  }
+
+  .pagination {
+    padding: 0 var(--spacing-5);
+  }
+
+  .quickCreate {
+    padding: var(--spacing-5);
+  }
+
+  .acctCard .widgetHeader {
+    padding: var(--spacing-5);
+  }
+
+  .acctCard .widgetFooter {
+    padding: var(--spacing-4) var(--spacing-5);
+  }
+
+  .acctCard .acctMetricCell {
+    padding: var(--spacing-4) var(--spacing-5);
+  }
+
+  .widgetHeader {
+    padding: var(--spacing-5);
+  }
+
+  .widgetFooter {
+    padding: var(--spacing-4) var(--spacing-5);
+  }
+
+  .metricCell {
+    padding: var(--spacing-4) var(--spacing-5);
+  }
+
+  .tlsCard {
+    padding: var(--spacing-5);
+  }
+
+  .spendCard {
+    padding: var(--spacing-5);
+  }
+
+  /* Metric grids: stack to single column on mobile */
+  .metricGrid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .metricCell {
+    border-left: none !important;
+  }
+
+  /* Account metrics: also stack */
+  .acctMetricCell {
+    border-left: none !important;
+  }
+
+  /* Services/Workspaces: hide sort + favorites on mobile */
+  .sortWrapper {
+    display: none;
+  }
+
+  .listSort {
+    display: none;
+  }
+
+  .favButton {
+    display: none;
+  }
+
+  /* Pagination overrides moved to end of file for specificity */
 }
 
 /* ─── Generic fallback cards ─── */
@@ -984,4 +1093,16 @@
 
 .paginationArrow:hover {
   background-color: var(--surface-hover);
+}
+
+/* Mobile overrides that must come after base pagination styles */
+@media (max-width: 767px) {
+  .paginationLeft {
+    display: none;
+  }
+
+  .paginationRight {
+    flex: 1;
+    justify-content: space-between;
+  }
 }

@@ -3,8 +3,7 @@
   flex: 1;
   min-height: 0;
   width: 100%;
-  /* Ensure the shell fills remaining viewport height below top menu */
-  height: calc(100vh - 64px);
+  overflow: hidden;
 }
 
 .contentWrapper {
@@ -20,12 +19,11 @@
 .pageContent {
   display: flex;
   flex-direction: column;
-  flex: 1;
+  flex: 1 0 auto;
   width: 100%;
   max-width: 1464px;
   padding: 0 var(--spacing-7);
   padding-bottom: var(--spacing-11);
-  min-height: 928px;
   opacity: 1;
   transform: translateY(0);
   transition: opacity 150ms ease, transform 150ms ease;

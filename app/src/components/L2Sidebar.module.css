@@ -1,7 +1,7 @@
 .sidebarContainer {
   position: relative;
   flex-shrink: 0;
-  height: calc(100vh - 64px);
+  height: 100%;
   z-index: 10;
 }
 

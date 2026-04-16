@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { Icon } from './Icon';
 import { navigationData, isSection } from '../data/navigation';
 import type { NavItem, NavSection } from '../data/navigation';
@@ -106,10 +106,29 @@ export function GlobalNav({
 
   const l2Data = mobileL2Target ? l2NavMap[mobileL2Target] : null;
 
+  const [animating, setAnimating] = useState(false);
+  const panelRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (!isOpen) {
+      setAnimating(true);
+      const el = panelRef.current;
+      if (el) {
+        const onEnd = () => { setAnimating(false); el.removeEventListener('transitionend', onEnd); };
+        el.addEventListener('transitionend', onEnd);
+        return () => el.removeEventListener('transitionend', onEnd);
+      }
+      const fallback = setTimeout(() => setAnimating(false), 400);
+      return () => clearTimeout(fallback);
+    }
+  }, [isOpen]);
+
+  const showOverlay = isOpen || animating;
+
   return (
-    <div className={`${styles.overlay} ${isOpen ? styles.overlayVisible : ''}`}>
+    <div className={`${styles.overlay} ${showOverlay ? styles.overlayVisible : ''}`}>
       <div className={styles.scrim} onClick={onClose} />
-      <nav className={`${styles.panel} ${isOpen ? styles.panelOpen : ''}`}>
+      <nav ref={panelRef} className={`${styles.panel} ${isOpen ? styles.panelOpen : ''}`}>
         <NavHeader onClose={onClose} />
         <div className={styles.panelBody}>
           {/* Global nav pane */}
@@ -191,7 +210,7 @@ export function GlobalNav({
           {/* L2 nav pane (mobile only) */}
           <div className={`${styles.slidePane} ${styles.slidePaneSecond} ${mobileL2Target ? styles.slidePaneIn : ''}`}>
             {l2Data && (
-              <div className={styles.menuContent}>
+              <div className={styles.l2MenuContent}>
                 <button className={styles.backButton} onClick={handleBackToMain}>
                   <Icon name="arrow-left" size={20} />
                   <span className={styles.backLabel}>Main menu</span>

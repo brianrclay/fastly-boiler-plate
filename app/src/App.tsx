@@ -260,12 +260,10 @@ export default function App() {
         return <ServiceSummaryPage serviceName={activeSubItem || 'Service'} pageVisible={pageVisible} onNavigate={handleItemClick} />;
       default:
         return (
-          <>
-            <main className={styles.main}>
-              <HomePage title={pageTitles[displayedItem] || displayedItem} pageVisible={pageVisible} onNavigate={handleItemClick} onServiceClick={handleServiceClick} />
-            </main>
+          <main className={styles.main}>
+            <HomePage title={pageTitles[displayedItem] || displayedItem} pageVisible={pageVisible} onNavigate={handleItemClick} onServiceClick={handleServiceClick} />
             <Footer />
-          </>
+          </main>
         );
     }
   };
