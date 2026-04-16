@@ -12,7 +12,6 @@
   letter-spacing: 0.048px;
   color: var(--text-primary);
   margin: 0;
-  padding: var(--spacing-7) 0 0;
 }
 
 /* Plan card */
@@ -83,6 +82,12 @@
 .cardRow {
   display: flex;
   gap: var(--spacing-6);
+}
+
+@media (max-width: 1200px) {
+  .cardRow {
+    flex-direction: column;
+  }
 }
 
 .tableCard {
@@ -425,8 +430,6 @@
 /* Mobile */
 @media (max-width: 767px) {
   .planActions { flex-direction: column; }
-
-  .cardRow { flex-direction: column; }
 
   .tableCard { padding: var(--spacing-5); }
 
