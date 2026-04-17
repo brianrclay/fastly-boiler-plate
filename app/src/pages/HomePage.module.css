@@ -501,6 +501,7 @@
   background-color: var(--surface-primary);
   overflow: hidden;
   cursor: pointer;
+  text-align: left;
 }
 
 .metricCell:nth-child(odd) {

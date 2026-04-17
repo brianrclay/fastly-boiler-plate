@@ -82,6 +82,9 @@ export function ServiceSummaryPage({ serviceName, pageVisible = true, onNavigate
   const events = genEvents(serviceName, m.latestVersion);
   const serviceId = svcData?.id || Array.from(serviceName).map((c) => c.charCodeAt(0).toString(16)).join('').slice(0, 20);
   const configs = svcData?.configs || [{ type: 'Draft' as const, version: '1' }];
+  const isCompute = svcData?.serviceType === 'Compute';
+  const parentPage = isCompute ? 'compute' : 'cdn';
+  const parentLabel = isCompute ? 'Compute services' : 'CDN services';
 
   const metricsRow = [
     { label: 'Requests', value: m.requests.toLocaleString(), spark: m.sparklines[0] },
@@ -98,7 +101,7 @@ export function ServiceSummaryPage({ serviceName, pageVisible = true, onNavigate
           {/* Header */}
           <div className={styles.header}>
             <div className={styles.breadcrumb}>
-              <button className={styles.breadcrumbLink} onClick={() => onNavigate?.('cdn')}>CDN services</button>
+              <button className={styles.breadcrumbLink} onClick={() => onNavigate?.(parentPage)}>{parentLabel}</button>
               <span className={styles.breadcrumbSep}>/</span>
               <span className={styles.breadcrumbCurrent}>{serviceName}</span>
             </div>

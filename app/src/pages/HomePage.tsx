@@ -18,14 +18,16 @@ interface HomeService {
   status: string;
 }
 
-const servicesList: HomeService[] = allServicesData.map((s) => ({
-  name: s.name,
-  id: s.id,
-  type: s.serviceType,
-  configs: s.configs.map((c) => ({ type: c.type, version: c.version })),
-  rps: s.rps,
-  status: 'Blocking',
-}));
+const servicesList: HomeService[] = allServicesData
+  .map((s) => ({
+    name: s.name,
+    id: s.id,
+    type: s.serviceType,
+    configs: s.configs.map((c) => ({ type: c.type, version: c.version })),
+    rps: s.rps,
+    status: 'Blocking',
+  }))
+  .sort((a, b) => b.rps - a.rps);
 
 const workspacesList = [
   { name: 'Acme Prod', rps: '0 R/s', linked: 'Linked to 3 services' },
