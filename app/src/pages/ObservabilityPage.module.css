@@ -87,3 +87,9 @@
   flex: 1;
   min-width: 0;
 }
+
+@media (max-width: 767px) {
+  .pageContent {
+    padding: 0 var(--spacing-5);
+  }
+}
