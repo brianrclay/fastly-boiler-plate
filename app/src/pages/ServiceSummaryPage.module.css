@@ -1099,7 +1099,7 @@
 }
 
 /* ─── Mobile ─── */
-@media (max-width: 767px) {
+@media (max-width: 960px) {
   .page {
     padding: 0 var(--spacing-5);
   }

@@ -9,6 +9,7 @@ import { ObservabilityPage } from './pages/ObservabilityPage';
 import { BillingPage } from './pages/BillingPage';
 import { DnsManagementPage } from './pages/DnsManagementPage';
 import { CdnPage } from './pages/CdnPage';
+import { ComputePage } from './pages/ComputePage';
 import { ServiceSummaryPage } from './pages/ServiceSummaryPage';
 import { theme } from './theme';
 import styles from './App.module.css';
@@ -64,6 +65,7 @@ const VALID_PAGE_IDS = new Set([
   'billing',
   'dns-management',
   'service-summary',
+  'compute',
 ]);
 
 function parseUrl(): { pageId: string; subId?: string } {
@@ -256,6 +258,8 @@ export default function App() {
         return <DnsManagementPage pageVisible={pageVisible} activeSubItem={activeSubItem} onSubItemChange={handleSubItemChange} />;
       case 'cdn':
         return <CdnPage pageVisible={pageVisible} onServiceClick={handleServiceClick} />;
+      case 'compute':
+        return <ComputePage pageVisible={pageVisible} onServiceClick={handleServiceClick} />;
       case 'service-summary':
         return <ServiceSummaryPage serviceName={activeSubItem || 'Service'} pageVisible={pageVisible} onNavigate={handleItemClick} />;
       default:
@@ -280,6 +284,7 @@ export default function App() {
           isOpen={navOpen}
           onClose={handleNavClose}
           activeItem={activeItem}
+          activeSubItem={activeSubItem}
           onItemClick={handleItemClick}
           onL2Navigate={handleL2Navigate}
           expandedSections={expandedSections}

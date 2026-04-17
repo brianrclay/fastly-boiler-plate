@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Icon } from '../components/Icon';
+import { services as allServicesData } from '../data/services';
 import styles from './HomePage.module.css';
 
 /* ─── Static data ─── */
@@ -17,18 +18,14 @@ interface HomeService {
   status: string;
 }
 
-const servicesList: HomeService[] = [
-  { name: 'Maple 1', id: 'h8H89gG78H89g8G8G8gH9', type: 'CDN', configs: [{ type: 'Production', version: '999,999' }, { type: 'Staging', version: '90' }], rps: 14342, status: 'Blocking' },
-  { name: 'Unnamed service 14', id: 'j9J90hH79J9h9H9H9hJ0', type: 'CDN', configs: [{ type: 'Production', version: '91' }, { type: 'Staging', version: '92' }], rps: 11459, status: 'Blocking' },
-  { name: 'Atlas', id: 'k0K01iI80K0i0I0I0iK1', type: 'CDN', configs: [{ type: 'Production', version: '93' }], rps: 9875, status: 'Blocking' },
-  { name: 'Fast GTM', id: 'g7G7898H89G8giuhiugGUYG', type: 'CDN', configs: [{ type: 'Production', version: '87' }], rps: 6891, status: 'Blocking' },
-  { name: 'Staging', id: 'l1L12jJ81L1j1J1J1jL2', type: 'CDN', configs: [{ type: 'Draft', version: '1' }], rps: 5124, status: 'Blocking' },
-  { name: 'auth0 test', id: 'm2M23kK82M2k2K2K2kM3', type: 'CDN', configs: [{ type: 'Production', version: '97' }, { type: 'Staging', version: '98' }], rps: 4234, status: 'Blocking' },
-  { name: 'A/B test login', id: 'n3N34lL83N3l3L3L3lN4', type: 'CDN', configs: [{ type: 'Production', version: '99' }, { type: 'Staging', version: '100' }], rps: 678, status: 'Blocking' },
-  { name: 'www.fastly.com', id: 'p5P56nN85P5n5N5N5nP6', type: 'CDN', configs: [{ type: 'Locked' }], rps: 0, status: 'Blocking' },
-  { name: 'Edge browser ID', id: 'q6Q67oO86Q6o6O6O6oQ7', type: 'CDN', configs: [{ type: 'Draft', version: '1' }], rps: 0, status: 'Blocking' },
-  { name: 'www.manage.fastly.com', id: 'o4O45mM84O4m4M4M4mO5', type: 'CDN', configs: [{ type: 'Draft', version: '1' }], rps: 0, status: 'Blocking' },
-];
+const servicesList: HomeService[] = allServicesData.map((s) => ({
+  name: s.name,
+  id: s.id,
+  type: s.serviceType,
+  configs: s.configs.map((c) => ({ type: c.type, version: c.version })),
+  rps: s.rps,
+  status: 'Blocking',
+}));
 
 const workspacesList = [
   { name: 'Acme Prod', rps: '0 R/s', linked: 'Linked to 3 services' },
@@ -152,13 +149,14 @@ function PageHeader({ onNavigate }: { onNavigate?: (id: string) => void }) {
 }
 
 /* ─── Metric widget card (reusable) ─── */
-function MetricWidgetCard({ title: cardTitle, subtitle, metrics, cols, linkText, onLinkClick }: {
+function MetricWidgetCard({ title: cardTitle, subtitle, metrics, cols, linkText, onLinkClick, sparklines }: {
   title: string;
   subtitle: string;
   metrics: { label: string; value: string }[];
   cols: number;
   linkText: string;
   onLinkClick?: () => void;
+  sparklines?: number[][];
 }) {
   return (
     <div className={styles.widget}>
@@ -168,10 +166,27 @@ function MetricWidgetCard({ title: cardTitle, subtitle, metrics, cols, linkText,
       </div>
       <div className={styles.metricGrid} style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}>
         {metrics.map((m, i) => (
-          <div key={i} className={styles.metricCell}>
-            <span className={styles.metricLabel}>{m.label}</span>
-            <span className={styles.metricValue}>{m.value}</span>
-          </div>
+          sparklines && sparklines[i] ? (
+            <button key={i} className={styles.metricCell} onClick={onLinkClick}>
+              <span className={styles.metricLabel}>{m.label}</span>
+              <span className={styles.metricValue}>{m.value}</span>
+              <div className={styles.miniSparklineWrap}>
+                <MiniSparkline data={sparklines[i]} />
+                <div className={styles.miniSparklineFade} />
+              </div>
+              <div className={styles.metricCellHover}>
+                <div className={styles.acctMetricHoverBtn}>
+                  <Icon name="search" size={20} />
+                  <span>View dashboard</span>
+                </div>
+              </div>
+            </button>
+          ) : (
+            <div key={i} className={styles.metricCell}>
+              <span className={styles.metricLabel}>{m.label}</span>
+              <span className={styles.metricValue}>{m.value}</span>
+            </div>
+          )
         ))}
       </div>
       <div className={styles.widgetFooter}>
@@ -267,6 +282,12 @@ function DdosMetrics({ onNavigate }: { onNavigate?: (id: string) => void }) {
         { label: 'DDoS attack requests', value: '123.45k' },
         { label: 'DDoS attack requests mitigated', value: '999' },
       ]}
+      sparklines={[
+        [30, 28, 35, 40, 38, 45, 50, 48, 55, 52],
+        [10, 12, 8, 15, 11, 14, 9, 13, 10, 12],
+        [25, 30, 28, 35, 33, 40, 38, 45, 42, 48],
+        [20, 18, 22, 25, 23, 28, 26, 30, 28, 32],
+      ]}
       linkText="View DDoS Protection dashboard"
       onLinkClick={() => onNavigate?.('ddos-protection')}
     />
@@ -283,6 +304,10 @@ function WafMetrics({ onNavigate }: { onNavigate?: (id: string) => void }) {
       metrics={[
         { label: 'Request volume', value: '123.45k' },
         { label: 'Blocked requests', value: '999' },
+      ]}
+      sparklines={[
+        [40, 45, 42, 50, 48, 55, 52, 58, 55, 60],
+        [5, 8, 6, 10, 7, 12, 9, 11, 8, 10],
       ]}
       linkText="View Next-Gen WAF dashboard"
       onLinkClick={() => onNavigate?.('next-gen-waf')}

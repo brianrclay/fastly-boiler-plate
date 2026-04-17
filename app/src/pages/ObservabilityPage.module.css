@@ -88,7 +88,7 @@
   min-width: 0;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 960px) {
   .pageContent {
     padding: 0 var(--spacing-5);
   }

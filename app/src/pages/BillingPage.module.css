@@ -4,6 +4,10 @@
   gap: var(--spacing-6);
 }
 
+.billingHeader {
+  padding-top: var(--spacing-7);
+}
+
 .pageTitle {
   font-family: var(--font-family-inter);
   font-size: 32px;
@@ -427,8 +431,141 @@
   color: var(--text-action);
 }
 
+/* ─── Billing Information page ─── */
+.billingInfoPage {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+}
+
+.billingInfoHeader {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+  padding-top: var(--spacing-7);
+}
+
+.infoCard {
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-5);
+  background-color: var(--surface-primary);
+}
+
+.infoCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.infoCardBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.infoCardRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-5);
+}
+
+.infoLabel {
+  font-family: var(--font-family-inter);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  color: var(--text-secondary);
+}
+
+.infoValue {
+  font-family: var(--font-family-inter);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  color: var(--text-primary);
+}
+
+.infoValueBold {
+  font-family: var(--font-family-inter);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 28px;
+  color: var(--text-primary);
+}
+
+.editLink {
+  font-family: var(--font-family-inter);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  color: var(--text-action);
+  text-decoration: underline;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.editLink:hover {
+  text-decoration: none;
+}
+
+.removeLink {
+  font-family: var(--font-family-inter);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  color: var(--text-action);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.removeLink:hover {
+  text-decoration: underline;
+}
+
+.paymentActions {
+  display: flex;
+  gap: var(--spacing-5);
+  align-items: center;
+}
+
+.addressText {
+  font-family: var(--font-family-inter);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 22px;
+  color: var(--text-primary);
+  margin: 0;
+  white-space: pre-line;
+}
+
+.planDetailsGrid {
+  display: flex;
+  gap: var(--spacing-7);
+  flex-wrap: wrap;
+}
+
+.planDetailItem {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.planCardActions {
+  display: flex;
+  gap: var(--spacing-4);
+  padding-top: var(--spacing-3);
+}
+
 /* Mobile */
-@media (max-width: 767px) {
+@media (max-width: 960px) {
   .planActions { flex-direction: column; }
 
   .tableCard { padding: var(--spacing-5); }
@@ -443,5 +580,24 @@
     font-size: 24px;
     line-height: 28px;
     letter-spacing: 0.036px;
+  }
+
+  .billingInfoHeader {
+    padding-top: var(--spacing-6);
+  }
+
+  .planDetailsGrid {
+    flex-direction: column;
+    gap: var(--spacing-5);
+  }
+
+  .planCardActions {
+    flex-direction: column;
+  }
+
+  .infoCardRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-3);
   }
 }

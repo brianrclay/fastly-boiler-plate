@@ -35,6 +35,7 @@ export function BillingPage({ pageVisible = true, activeSubItem, onSubItemChange
   const renderContent = () => {
     if (isOverview) return <BillingOverview />;
     if (isInvoices) return <InvoicesPage />;
+    if (activeL2Item === 'billing-information') return <BillingInformationPage />;
     return (
       <>
         <div className={obsStyles.pageHeader}>
@@ -119,7 +120,9 @@ const regions = [
 function BillingOverview() {
   return (
     <div className={styles.billing}>
-      <h1 className={styles.pageTitle}>Billing overview</h1>
+      <div className={styles.billingHeader}>
+        <h1 className={styles.pageTitle}>Billing overview</h1>
+      </div>
 
       {/* Plan card */}
       <div className={styles.planCard}>
@@ -306,6 +309,75 @@ function ChartPlaceholder() {
       </svg>
       <div className={styles.chartXAxis}>
         {months.map((m) => <span key={m}>{m}</span>)}
+      </div>
+    </div>
+  );
+}
+
+/* ─── Billing Information Page ─── */
+function BillingInformationPage() {
+  return (
+    <div className={styles.billingInfoPage}>
+      <div className={styles.billingInfoHeader}>
+        <h1 className={styles.pageTitle}>Billing information</h1>
+      </div>
+
+      {/* Payment method */}
+      <div className={styles.infoCard}>
+        <div className={styles.infoCardHeader}>
+          <h3 className={styles.cardTitle}>Payment method</h3>
+        </div>
+        <div className={styles.infoCardBody}>
+          <span className={styles.infoValue}>Visa ending in 4242</span>
+          <span className={styles.infoLabel}>Expires 03/2027</span>
+          <div className={styles.paymentActions}>
+            <button className={styles.editLink}>Edit</button>
+            <button className={styles.removeLink}>Remove</button>
+          </div>
+        </div>
+      </div>
+
+      {/* Billing address */}
+      <div className={styles.infoCard}>
+        <div className={styles.infoCardHeader}>
+          <h3 className={styles.cardTitle}>Billing address</h3>
+        </div>
+        <div className={styles.infoCardBody}>
+          <p className={styles.addressText}>
+            {'Acme Co.\n123 Main Street\nSuite 400\nSan Francisco, CA 94105\nUnited States'}
+          </p>
+          <div>
+            <button className={styles.editLink}>Edit</button>
+          </div>
+        </div>
+      </div>
+
+      {/* Current plan */}
+      <div className={styles.infoCard}>
+        <div className={styles.infoCardHeader}>
+          <h3 className={styles.cardTitle}>Current plan</h3>
+        </div>
+        <div className={styles.infoCardBody}>
+          <span className={styles.infoValueBold}>Custom plan</span>
+          <div className={styles.planDetailsGrid}>
+            <div className={styles.planDetailItem}>
+              <span className={styles.infoLabel}>Monthly commitment</span>
+              <span className={styles.infoValue}>$500.00</span>
+            </div>
+            <div className={styles.planDetailItem}>
+              <span className={styles.infoLabel}>Billing cycle</span>
+              <span className={styles.infoValue}>Monthly</span>
+            </div>
+            <div className={styles.planDetailItem}>
+              <span className={styles.infoLabel}>Next renewal</span>
+              <span className={styles.infoValue}>Jan 15, 2026</span>
+            </div>
+          </div>
+          <div className={styles.planCardActions}>
+            <button className={styles.linkBtn}>View usage</button>
+            <button className={styles.primaryBtn}>Edit plan</button>
+          </div>
+        </div>
       </div>
     </div>
   );

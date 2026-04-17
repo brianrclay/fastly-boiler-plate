@@ -3,6 +3,7 @@
   align-items: flex-start;
   justify-content: space-between;
   flex-wrap: wrap;
+  margin-top: var(--spacing-11);
   padding: var(--spacing-7);
   border-top: 1px solid var(--border-primary);
   background-color: var(--surface-primary);
@@ -51,7 +52,7 @@
   margin: 0;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 960px) {
   .footer {
     flex-direction: column;
     gap: var(--spacing-4);

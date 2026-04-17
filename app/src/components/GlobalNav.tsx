@@ -18,6 +18,7 @@ interface GlobalNavProps {
   isOpen: boolean;
   onClose: () => void;
   activeItem: string;
+  activeSubItem?: string;
   onItemClick: (id: string) => void;
   onL2Navigate: (pageId: string, subId: string) => void;
   expandedSections: Record<string, boolean>;
@@ -30,6 +31,7 @@ export function GlobalNav({
   isOpen,
   onClose,
   activeItem,
+  activeSubItem,
   onItemClick,
   onL2Navigate,
   expandedSections,
@@ -43,7 +45,7 @@ export function GlobalNav({
   // When nav opens, show L2 directly if already on an L2 page (mobile only)
   useEffect(() => {
     if (isOpen) {
-      if (l2NavMap[activeItem] && window.matchMedia('(max-width: 767px)').matches) {
+      if (l2NavMap[activeItem] && window.matchMedia('(max-width: 960px)').matches) {
         setMobileL2Target(activeItem);
       } else {
         setMobileL2Target(null);
@@ -75,7 +77,7 @@ export function GlobalNav({
 
   const handleItemClick = useCallback((id: string) => {
     // On mobile, if item has L2 nav, show L2 panel instead of navigating
-    if (l2NavMap[id] && window.matchMedia('(max-width: 767px)').matches) {
+    if (l2NavMap[id] && window.matchMedia('(max-width: 960px)').matches) {
       setMobileL2Target(id);
       setL2Expanded({});
       return;
@@ -228,6 +230,7 @@ export function GlobalNav({
                       onItemClick={handleL2SubItemClick}
                       isExpanded={!!l2Expanded[item.id]}
                       onToggleExpand={() => toggleL2Expanded(item.id)}
+                      activeSubItem={activeSubItem}
                     />
                   ))}
                 </div>
@@ -347,17 +350,19 @@ interface MobileL2ItemProps {
   onItemClick: (id: string) => void;
   isExpanded: boolean;
   onToggleExpand: () => void;
+  activeSubItem?: string;
 }
 
-function MobileL2Item({ item, onItemClick, isExpanded, onToggleExpand }: MobileL2ItemProps) {
+function MobileL2Item({ item, onItemClick, isExpanded, onToggleExpand, activeSubItem }: MobileL2ItemProps) {
   const hasChildren = !!item.children?.length;
 
   if (hasChildren) {
+    const isParentActive = item.children!.some((child) => child.id === activeSubItem);
     return (
       <div className={styles.l2ItemGroup}>
         <div className={styles.l2ItemExpandable}>
           <button
-            className={styles.l2ItemButton}
+            className={`${styles.l2ItemButton} ${isParentActive ? styles.l2ItemButtonActive : ''}`}
             onClick={() => { if (!isExpanded) onToggleExpand(); onItemClick(item.children![0].id); }}
           >
             <Icon name={item.icon} size={20} />
@@ -375,7 +380,7 @@ function MobileL2Item({ item, onItemClick, isExpanded, onToggleExpand }: MobileL
             {item.children!.map((child) => (
               <button
                 key={child.id}
-                className={styles.l2ChildItem}
+                className={`${styles.l2ChildItem} ${child.id === activeSubItem ? styles.l2ChildItemActive : ''}`}
                 onClick={() => onItemClick(child.id)}
               >
                 {child.label}
@@ -387,9 +392,10 @@ function MobileL2Item({ item, onItemClick, isExpanded, onToggleExpand }: MobileL
     );
   }
 
+  const isActive = item.id === activeSubItem;
   return (
     <button
-      className={styles.l2ItemButton}
+      className={`${styles.l2ItemButton} ${isActive ? styles.l2ItemButtonActive : ''}`}
       onClick={() => onItemClick(item.id)}
     >
       <Icon name={item.icon} size={20} />

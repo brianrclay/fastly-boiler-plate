@@ -125,8 +125,8 @@
   --LAYOUT--border-radius--round: 625rem;
 
   /* --- Breakpoints --- */
-  --LAYOUT--breakpoint--tablet--up: (min-width: 768px);
-  --LAYOUT--breakpoint--tablet--down: (max-width: 767px);
+  --LAYOUT--breakpoint--tablet--up: (min-width: 961px);
+  --LAYOUT--breakpoint--tablet--down: (max-width: 960px);
   --LAYOUT--breakpoint--laptop--up: (min-width: 1200px);
   --LAYOUT--breakpoint--laptop--down: (max-width: 1200px);
   --LAYOUT--breakpoint--desktop--up: (min-width: 1440px);

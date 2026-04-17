@@ -128,7 +128,7 @@
 }
 
 /* On desktop, disable the L2 slide panel */
-@media (min-width: 768px) {
+@media (min-width: 961px) {
   .slidePaneOut {
     transform: translateX(0);
   }
@@ -424,8 +424,22 @@
   }
 }
 
+.l2ItemButtonActive {
+  background-color: var(--surface-selected);
+  border-radius: var(--radius-md);
+}
+
+.l2ItemButtonActive .l2ItemLabel {
+  color: var(--text-action);
+}
+
+.l2ChildItemActive {
+  background-color: var(--surface-selected);
+  color: var(--text-action);
+}
+
 /* On mobile, panel takes full width */
-@media (max-width: 767px) {
+@media (max-width: 960px) {
   .panel {
     width: 100%;
   }

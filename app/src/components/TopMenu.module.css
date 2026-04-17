@@ -202,8 +202,8 @@
   overflow: hidden;
 }
 
-/* === TABLET (>= 768px) === */
-@media (min-width: 768px) {
+/* === TABLET (>= 961px) === */
+@media (min-width: 961px) {
   .left {
     flex: 1;
     min-width: 0;

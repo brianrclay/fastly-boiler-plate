@@ -23,7 +23,7 @@ function Sparkline({ data }: { data: number[] }) {
   const w = 294;
   const h = 56;
   const padTop = 8;
-  const uid = `cdn-spark-${data[0]}-${data[data.length - 1]}`;
+  const uid = `compute-spark-${data[0]}-${data[data.length - 1]}`;
 
   const pts = data.map((val, i) => ({
     x: (i / (data.length - 1)) * w,
@@ -67,7 +67,9 @@ function pillClass(type: string): string {
   }
 }
 
-export function CdnPage({ pageVisible = true, onServiceClick }: { pageVisible?: boolean; onServiceClick?: (name: string) => void }) {
+const computeServices = services.filter((s) => s.serviceType === 'Compute');
+
+export function ComputePage({ pageVisible = true, onServiceClick }: { pageVisible?: boolean; onServiceClick?: (name: string) => void }) {
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState<'expanded' | 'condensed'>('expanded');
@@ -83,12 +85,10 @@ export function CdnPage({ pageVisible = true, onServiceClick }: { pageVisible?: 
     }
   }, [sortField]);
 
-  const cdnServices = useMemo(() => services.filter((s) => s.serviceType === 'CDN'), []);
-
   const sortedServices = useMemo(() => {
     const filtered = searchQuery
-      ? cdnServices.filter((s) => s.name.toLowerCase().includes(searchQuery.toLowerCase()) || s.id.toLowerCase().includes(searchQuery.toLowerCase()))
-      : [...cdnServices];
+      ? computeServices.filter((s) => s.name.toLowerCase().includes(searchQuery.toLowerCase()) || s.id.toLowerCase().includes(searchQuery.toLowerCase()))
+      : [...computeServices];
 
     filtered.sort((a, b) => {
       let cmp = 0;
@@ -107,7 +107,7 @@ export function CdnPage({ pageVisible = true, onServiceClick }: { pageVisible?: 
     });
 
     return filtered;
-  }, [cdnServices, searchQuery, sortField, sortDirection]);
+  }, [searchQuery, sortField, sortDirection]);
 
   const totalResults = sortedServices.length;
 
@@ -118,7 +118,7 @@ export function CdnPage({ pageVisible = true, onServiceClick }: { pageVisible?: 
           <div className={`${styles.pageContent} ${pageVisible ? styles.pageContentAnimate : styles.pageContentHidden}`}>
             {/* Page header */}
             <div className={styles.pageHeader}>
-              <h1 className={styles.title}>CDN services</h1>
+              <h1 className={styles.title}>Compute services</h1>
             </div>
 
             {/* Controls row */}

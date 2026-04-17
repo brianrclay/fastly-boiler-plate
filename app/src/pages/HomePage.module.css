@@ -172,7 +172,7 @@
   gap: var(--spacing-6);
 }
 
-@media (max-width: 767px) {
+@media (max-width: 960px) {
   .pageContent {
     padding: 0 var(--spacing-5);
   }
@@ -491,6 +491,7 @@
 }
 
 .metricCell {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: var(--spacing-2);
@@ -499,10 +500,28 @@
   border-left: 1px solid var(--border-primary);
   background-color: var(--surface-primary);
   overflow: hidden;
+  cursor: pointer;
 }
 
 .metricCell:nth-child(odd) {
   border-left: none;
+}
+
+.metricCellHover {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--COLOR--scrim--primary, rgba(18,20,23,0.25));
+  backdrop-filter: blur(3px);
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+  pointer-events: none;
+}
+
+.metricCell:hover .metricCellHover {
+  opacity: 1;
 }
 
 .metricLabel {
@@ -1096,7 +1115,7 @@
 }
 
 /* Mobile overrides that must come after base pagination styles */
-@media (max-width: 767px) {
+@media (max-width: 960px) {
   .paginationLeft {
     display: none;
   }

@@ -590,3 +590,51 @@
 .paginationArrow:hover {
   background-color: var(--surface-hover);
 }
+
+@media (max-width: 960px) {
+  .pageContent {
+    padding: 0 var(--spacing-5);
+  }
+
+  .controlsRow {
+    flex-direction: column;
+    gap: var(--spacing-5);
+  }
+
+  .searchBarFrame {
+    flex-wrap: wrap;
+  }
+
+  .actionsDivider {
+    border-left: none;
+    padding-left: 0;
+    width: 100%;
+  }
+
+  .createButton {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .filtersGroup {
+    flex-direction: column;
+  }
+
+  .tableWrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table {
+    min-width: 700px;
+  }
+
+  .paginationLeft {
+    display: none;
+  }
+
+  .paginationRight {
+    flex: 1;
+    justify-content: space-between;
+  }
+}
