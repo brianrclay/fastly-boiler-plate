@@ -341,91 +341,758 @@ export function ServiceSummaryPage({ serviceName, pageVisible = true, onNavigate
 }
 
 /* ─── Configuration tab content ─── */
-const configNavItems = [
+interface ConfigNavChild {
+  id: string;
+  label: string;
+  badge: string;
+}
+
+interface ConfigNavItem {
+  id: string;
+  label: string;
+  badge?: string;
+  children?: ConfigNavChild[];
+}
+
+const configNavItems: ConfigNavItem[] = [
   { id: 'domains', label: 'Domains', badge: '2' },
-  { id: 'origins', label: 'Origins', expandable: true },
-  { id: 'settings', label: 'Settings', expandable: true },
-  { id: 'content', label: 'Content', expandable: true },
+  {
+    id: 'origins', label: 'Origins', children: [
+      { id: 'origins-hosts', label: 'Hosts', badge: '1' },
+      { id: 'origins-health-checks', label: 'Health checks', badge: '0' },
+    ],
+  },
+  {
+    id: 'settings', label: 'Settings', children: [
+      { id: 'settings-ip-block-list', label: 'IP block list', badge: 'Off' },
+      { id: 'settings-override-host', label: 'Override host', badge: 'Off' },
+      { id: 'settings-serve-stale', label: 'Serve stale', badge: '1' },
+      { id: 'settings-force-tls', label: 'Force TLS and HSTS', badge: 'Off' },
+      { id: 'settings-http3', label: 'HTTP/3', badge: 'Off' },
+      { id: 'settings-websockets', label: 'WebSockets', badge: 'Off' },
+      { id: 'settings-apex-redirects', label: 'Apex redirects', badge: '0' },
+      { id: 'settings-request-settings', label: 'Request settings', badge: '0' },
+      { id: 'settings-cache-settings', label: 'Cache settings', badge: '0' },
+    ],
+  },
+  {
+    id: 'content', label: 'Content', children: [
+      { id: 'content-headers', label: 'Headers', badge: '0' },
+      { id: 'content-compression', label: 'Compression', badge: '0' },
+      { id: 'content-responses', label: 'Responses', badge: '0' },
+    ],
+  },
   { id: 'logging', label: 'Logging', badge: '0' },
-  { id: 'vcl', label: 'VCL' },
+  {
+    id: 'vcl', label: 'VCL', children: [
+      { id: 'vcl-snippets', label: 'VCL snippets', badge: '0' },
+      { id: 'vcl-custom', label: 'Custom VCL', badge: '0' },
+      { id: 'vcl-complete', label: 'Complete VCL', badge: '' },
+    ],
+  },
   { id: 'image-optimizer', label: 'Image Optimizer', badge: 'Off' },
   { id: 'conditions', label: 'Conditions', badge: '0' },
   { id: 'acl', label: 'Access control lists', badge: '0' },
   { id: 'dictionaries', label: 'Dictionaries', badge: '0' },
-  { id: 'security', label: 'Security', expandable: true },
+  {
+    id: 'security', label: 'Security', children: [
+      { id: 'security-ddos', label: 'DDoS Protection', badge: 'Off' },
+      { id: 'security-api-discovery', label: 'API Discovery', badge: 'Off' },
+      { id: 'security-bot-mgmt', label: 'Bot Management', badge: 'Off' },
+      { id: 'security-ddos-mitigation', label: 'DDoS mitigation', badge: 'On' },
+      { id: 'security-rate-limiting', label: 'Rate Limiting', badge: 'Off' },
+    ],
+  },
 ];
 
 function ConfigurationContent({ serviceName: _serviceName }: { serviceName: string }) {
   const [activeSection, setActiveSection] = useState('domains');
-  const [domainSearch, setDomainSearch] = useState('');
+  const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
+  const layoutRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
 
-  const domains = [
-    { domain: 'www.fastly.com', comment: 'Marketing site' },
-    { domain: 'www.fastly.com', comment: '-' },
-  ];
+  const handleToggleExpand = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setExpandedItems((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
 
-  const filteredDomains = domainSearch
-    ? domains.filter((d) => d.domain.toLowerCase().includes(domainSearch.toLowerCase()))
-    : domains;
+  const handleNavClick = (item: ConfigNavItem) => {
+    setActiveSection(item.id);
+    if (item.children && !expandedItems[item.id]) {
+      setExpandedItems((prev) => ({ ...prev, [item.id]: true }));
+    }
+    requestAnimationFrame(() => {
+      layoutRef.current?.scrollIntoView({ block: 'start' });
+    });
+  };
+
+  const handleChildClick = (parentId: string, childId: string) => {
+    setActiveSection(parentId);
+    requestAnimationFrame(() => {
+      const el = contentRef.current?.querySelector(`[data-section="${childId}"]`);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  };
 
   return (
-    <div className={styles.configLayout}>
-      {/* Settings sidebar */}
+    <div className={styles.configLayout} ref={layoutRef}>
       <div className={styles.configSidebar}>
         <div className={styles.configSearch}>
           <Icon name="search" size={20} style={{ color: 'var(--text-secondary)' }} />
           <input type="text" placeholder="Search all settings" />
         </div>
         <nav className={styles.configNav}>
-          {configNavItems.map((item) => (
-            <button
-              key={item.id}
-              className={`${styles.configNavItem} ${activeSection === item.id ? styles.configNavItemActive : ''}`}
-              onClick={() => setActiveSection(item.id)}
-            >
-              <span className={styles.configNavLabel}>{item.label}</span>
-              {item.badge && <span className={styles.configNavBadge}>{item.badge}</span>}
-              {item.expandable && <Icon name="chevron-down" size={20} style={{ color: 'var(--text-secondary)' }} />}
-            </button>
-          ))}
+          {configNavItems.map((item) => {
+            const isActive = activeSection === item.id;
+            const isExpanded = !!expandedItems[item.id];
+            const hasChildren = !!item.children;
+
+            if (hasChildren) {
+              return (
+                <div
+                  key={item.id}
+                  className={`${styles.configNavExpandable} ${isExpanded ? styles.configNavExpandableOpen : ''} ${isActive ? styles.configNavExpandableSelected : ''}`}
+                >
+                  <div className={styles.configNavParent}>
+                    <button
+                      className={`${styles.configNavParentBtn} ${isActive ? styles.configNavParentActive : ''}`}
+                      onClick={() => handleNavClick(item)}
+                    >
+                      <span className={styles.configNavLabel}>{item.label}</span>
+                    </button>
+                    <button
+                      className={styles.configNavChevron}
+                      onClick={(e) => handleToggleExpand(item.id, e)}
+                    >
+                      <Icon name={isExpanded ? 'chevron-up' : 'chevron-down'} size={20} />
+                    </button>
+                  </div>
+                  {isExpanded && item.children && (
+                    <div className={styles.configNavChildren}>
+                      {item.children.map((child) => (
+                        <button
+                          key={child.id}
+                          className={styles.configNavChild}
+                          onClick={() => handleChildClick(item.id, child.id)}
+                        >
+                          <span className={styles.configNavChildLabel}>{child.label}</span>
+                          <span className={styles.configNavChildBadge}>{child.badge}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
+            return (
+              <button
+                key={item.id}
+                className={`${styles.configNavItem} ${isActive ? styles.configNavItemActive : ''}`}
+                onClick={() => handleNavClick(item)}
+              >
+                <span className={styles.configNavLabel}>{item.label}</span>
+                {item.badge != null && <span className={styles.configNavBadge}>{item.badge}</span>}
+              </button>
+            );
+          })}
         </nav>
       </div>
 
-      {/* Content area */}
-      <div className={styles.configContent}>
-        <div className={`${styles.card} ${styles.configCard}`}>
-          <div className={styles.configContentHeader}>
-            <h2 className={styles.sectionTitle}>Domains</h2>
+      <div className={styles.configContent} ref={contentRef}>
+        <ConfigPage pageId={activeSection} />
+      </div>
+    </div>
+  );
+}
+
+function ConfigPage({ pageId }: { pageId: string }) {
+  switch (pageId) {
+    case 'domains': return <DomainsPage />;
+    case 'origins': return <OriginsPage />;
+    case 'content': return <ContentPage />;
+    case 'logging': return <LoggingPage />;
+    case 'vcl': return <VclPage />;
+    case 'conditions': return <ConditionsPage />;
+    case 'dictionaries': return <DictionariesPage />;
+    case 'acl': return <AclPage />;
+    case 'security': return <SecurityPage />;
+    default: {
+      const item = configNavItems.find((i) => i.id === pageId);
+      if (!item) return null;
+      return (
+        <div className={styles.configPageWrap}>
+          <div className={styles.configPageHeader}>
+            <h2 className={styles.configPageTitle}>{item.label}</h2>
           </div>
-          <div className={styles.configContentControls}>
-            <div className={styles.configDomainSearch}>
-              <Icon name="search" size={20} style={{ color: 'var(--text-secondary)' }} />
-              <input type="text" placeholder="Search domains" value={domainSearch} onChange={(e) => setDomainSearch(e.target.value)} />
+          {item.children ? (
+            item.children.map((child) => (
+              <div key={child.id} data-section={child.id} className={`${styles.card} ${styles.configCard}`}>
+                <div className={styles.configContentHeader}>
+                  <h3 className={styles.configSectionSubtitle}>{child.label}</h3>
+                </div>
+                <p className={styles.configEmptyText}>Placeholder content for {child.label}.</p>
+              </div>
+            ))
+          ) : (
+            <div className={`${styles.card} ${styles.configCard}`}>
+              <p className={styles.configEmptyText}>Placeholder content for {item.label}.</p>
             </div>
-            <button className={styles.addDomainBtn}><Icon name="add" size={20} /> Add domain</button>
-          </div>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>Domain ↓</th>
-                <th>Comment</th>
-                <th className={styles.configActionsCol} />
-              </tr>
-            </thead>
-            <tbody>
-              {filteredDomains.map((d, i) => (
-                <tr key={i}>
-                  <td>{d.domain}</td>
-                  <td>{d.comment}</td>
-                  <td className={styles.configRowActions}>
-                    <button className={styles.configRowAction}><Icon name="edit" size={20} /></button>
-                    <button className={styles.configRowAction}><Icon name="trash" size={20} /></button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          )}
         </div>
+      );
+    }
+  }
+}
+
+/* ─── Domains page ─── */
+function DomainsPage() {
+  const [domainSearch, setDomainSearch] = useState('');
+  const domains = [
+    { domain: 'hgrsefafdsc.com', comment: '—' },
+    { domain: 'hgtrbdfsfd.com', comment: '—' },
+    { domain: 'tewfdsafdas.com', comment: '—' },
+  ];
+  const filtered = domainSearch
+    ? domains.filter((d) => d.domain.toLowerCase().includes(domainSearch.toLowerCase()))
+    : domains;
+
+  return (
+    <div className={styles.configPageWrap}>
+      <div className={styles.configPageHeader}>
+        <div className={styles.configPageHeaderTop}>
+          <h2 className={styles.configPageTitle}>Domains</h2>
+          <button className={styles.addDomainBtn}><Icon name="add" size={20} /> Add domain</button>
+        </div>
+        <p className={styles.configPageDesc}>Domains route requests to your service. Link them to your origin (content source) when setting up the service.</p>
+        <div className={styles.configSearchInput}>
+          <Icon name="search" size={20} style={{ color: 'var(--text-secondary)' }} />
+          <input type="text" placeholder="Search domains" value={domainSearch} onChange={(e) => setDomainSearch(e.target.value)} />
+        </div>
+      </div>
+
+      <div className={`${styles.card} ${styles.configCard}`}>
+        <div className={styles.configContentHeader}>
+          <div className={styles.configCardTitleRow}>
+            <h3 className={styles.configCardTitle}>Classic domains</h3>
+            <span className={styles.versionedPill}>Versioned</span>
+            <Icon name="help" size={20} style={{ color: 'var(--text-secondary)' }} />
+          </div>
+        </div>
+        <p className={styles.configCardDesc}>These domains are tied to specific versions and are not as flexible as the above Domain Management domains.</p>
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th>Domain</th>
+              <th>Comment</th>
+              <th />
+            </tr>
+          </thead>
+          <tbody>
+            {filtered.map((d, i) => (
+              <tr key={i}>
+                <td>{d.domain}</td>
+                <td>{d.comment}</td>
+                <td className={styles.domainRowActions}>
+                  <span className={styles.domainWarningDot} />
+                  <button className={styles.domainActionLink}>Migrate</button>
+                  <button className={styles.domainActionBold}>Test</button>
+                  <button className={styles.configRowAction}><Icon name="more" size={20} /></button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Origins page ─── */
+const hostsData = [
+  { address: 'images.ctfassets.net', port: 443, name: 'dfeast01', tls: 'Yes', shielding: '-', chart: false, healthCheck: '/health', condition: '-', autoBalance: 'No' },
+  { address: 'images.ctfassets.net', port: 443, name: 'dfeast01', tls: 'Yes', shielding: '-', chart: false, healthCheck: '/health', condition: 'If Always false', autoBalance: 'No' },
+  { address: 'images.ctfassets.net', port: 443, name: 'dfeast01', tls: 'Yes', shielding: '-', chart: true, healthCheck: '/health', condition: 'If Always false', autoBalance: 'No' },
+];
+
+const healthChecksData = [
+  { name: 'HEAD /robots.txt - acme.com', description: 'Default Health Check', expectedResponse: '200', checkFrequency: '15000', path: '/health' },
+  { name: 'HEAD /robots.txt - acme.com', description: 'Default Health Check', expectedResponse: '200', checkFrequency: '15000', path: '/health' },
+];
+
+function OriginsPage() {
+  return (
+    <div className={styles.configPageWrap}>
+      <div data-section="origins-hosts" className={`${styles.card} ${styles.configCard}`}>
+        <div className={styles.configContentHeader}>
+          <h3 className={styles.configCardTitle}>Hosts</h3>
+        </div>
+        <p className={styles.configCardDesc}>Hosts are used as backends for your site. In addition to the IP address and port, the information is used to uniquely identify a domain.</p>
+        <div className={styles.configControlsRow}>
+          <div className={styles.configSearchInput}>
+            <Icon name="search" size={20} style={{ color: 'var(--text-secondary)' }} />
+            <input type="text" placeholder="Search hosts" />
+          </div>
+          <div className={styles.configControlsDivider} />
+          <button className={styles.expandAllLink}>Expand all hosts</button>
+          <button className={styles.addDomainBtn}><Icon name="add" size={20} /> Add host</button>
+        </div>
+        <div className={styles.hostsList}>
+          {hostsData.map((host, i) => (
+            <div key={i} className={styles.hostRow}>
+              <div className={styles.hostRowHeader}>
+                <div className={styles.hostRowHeaderLeft}>
+                  <button className={styles.hostNameLink}>{host.address} : {host.port}</button>
+                  <span className={styles.hostSubtext}>{host.name}</span>
+                </div>
+                <div className={styles.hostRowActions}>
+                  <button className={styles.hostConditionLink}>{host.condition === '-' ? 'Attach condition' : 'Detach condition'}</button>
+                  <button className={styles.configRowAction}><Icon name="more" size={20} /></button>
+                </div>
+              </div>
+              <div className={styles.hostDetailsGrid}>
+                <div className={styles.hostDetailItem}>
+                  <span className={styles.hostDetailLabel}>TLS from Fastly to your host</span>
+                  <span className={styles.hostDetailValue}>{host.tls}</span>
+                </div>
+                <div className={styles.hostDetailItem}>
+                  <span className={styles.hostDetailLabel}>Shielding</span>
+                  <span className={styles.hostDetailValue}>{host.shielding}</span>
+                </div>
+                <div className={styles.hostDetailItem}>
+                  <span className={styles.hostDetailLabel}>Last 2 hours of responses</span>
+                  <span className={styles.hostDetailValue}>{host.chart ? '—' : 'No data'}</span>
+                </div>
+              </div>
+              <div className={styles.hostDetailsGrid}>
+                <div className={styles.hostDetailItem}>
+                  <span className={styles.hostDetailLabel}>Health check</span>
+                  <span className={styles.hostDetailValue}>{host.healthCheck}</span>
+                </div>
+                <div className={styles.hostDetailItem}>
+                  <span className={styles.hostDetailLabel}>Condition</span>
+                  {host.condition !== '-' ? (
+                    <button className={styles.hostConditionValueLink}>{host.condition}</button>
+                  ) : (
+                    <span className={styles.hostDetailValue}>-</span>
+                  )}
+                </div>
+                <div className={styles.hostDetailItem}>
+                  <span className={styles.hostDetailLabel}>Auto load balance</span>
+                  <span className={styles.hostDetailValue}>{host.autoBalance}</span>
+                </div>
+              </div>
+              <button className={styles.moreDetailsBtn}>More details <Icon name="chevron-down" size={16} /></button>
+            </div>
+          ))}
+        </div>
+        <div className={styles.tablePagination}>
+          <span className={styles.paginationLabel}>Results per page: <button className={styles.paginationSelect}>5 <Icon name="chevron-down" size={20} /></button></span>
+          <span className={styles.paginationInfo}>30 results</span>
+          <div className={styles.paginationArrows}>
+            <button className={styles.paginationArrow}><Icon name="chevron-left" size={20} /></button>
+            <button className={styles.paginationArrow}><Icon name="chevron-right" size={20} /></button>
+          </div>
+        </div>
+      </div>
+
+      <div data-section="origins-health-checks" className={`${styles.card} ${styles.configCard}`}>
+        <div className={styles.configContentHeader}>
+          <h3 className={styles.configCardTitle}>Health checks</h3>
+        </div>
+        <p className={styles.configCardDesc}>Health checks <button className={styles.inlineLink}>monitor the status of your hosts</button>—you can set Fastly to use a different origin, serve stale content, and more.</p>
+        <div className={styles.configControlsRow}>
+          <div className={styles.configSearchInput}>
+            <Icon name="search" size={20} style={{ color: 'var(--text-secondary)' }} />
+            <input type="text" placeholder="Search health checks" />
+          </div>
+          <div className={styles.configControlsDivider} />
+          <button className={styles.addDomainBtn}><Icon name="add" size={20} /> Add health check</button>
+        </div>
+        <div className={styles.hostsList}>
+          {healthChecksData.map((hc, i) => (
+            <div key={i} className={styles.hostRow}>
+              <div className={styles.hostRowHeader}>
+                <div className={styles.hostRowHeaderLeft}>
+                  <button className={styles.hostNameLink}>{hc.name}</button>
+                  <span className={styles.hostSubtext}>{hc.description}</span>
+                </div>
+                <div className={styles.hostRowActions}>
+                  <button className={styles.configRowAction}><Icon name="edit" size={20} /></button>
+                  <button className={styles.configRowAction}><Icon name="trash" size={20} /></button>
+                </div>
+              </div>
+              <div className={styles.hostDetailsGrid}>
+                <div className={styles.hostDetailItem}>
+                  <span className={styles.hostDetailLabel}>Expected response</span>
+                  <span className={styles.hostDetailValue}>{hc.expectedResponse}</span>
+                </div>
+                <div className={styles.hostDetailItem}>
+                  <span className={styles.hostDetailLabel}>Check frequency</span>
+                  <span className={styles.hostDetailValue}>{hc.checkFrequency}</span>
+                </div>
+                <div className={styles.hostDetailItem}>
+                  <span className={styles.hostDetailLabel}>Health check</span>
+                  <span className={styles.hostDetailValue}>{hc.path}</span>
+                </div>
+              </div>
+              <button className={styles.moreDetailsBtn}>Show custom headers <Icon name="chevron-down" size={16} /></button>
+            </div>
+          ))}
+        </div>
+        <div className={styles.tablePagination}>
+          <span className={styles.paginationLabel}>Results per page: <button className={styles.paginationSelect}>5 <Icon name="chevron-down" size={20} /></button></span>
+          <span className={styles.paginationInfo}>2 results</span>
+          <div className={styles.paginationArrows}>
+            <button className={styles.paginationArrow}><Icon name="chevron-left" size={20} /></button>
+            <button className={styles.paginationArrow}><Icon name="chevron-right" size={20} /></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Security page ─── */
+const securityPromos = [
+  { id: 'ddos', title: 'DDoS Protection', desc: 'Automatic DDoS Protection that keeps any application and API available and performant.', cta: 'Purchase DDoS Protection' },
+  { id: 'api-discovery', title: 'API Discovery', desc: 'Monitor network data streams to discover, aggregate, and inventory all API calls.', cta: 'Contact Fastly Sales' },
+  { id: 'bot-mgmt', title: 'Bot Management', desc: 'Enables advanced bot capabilities, including Client Challenges and Client-Side Detection, for stronger protection in your Next-Gen WAF workspace.', cta: 'Contact Fastly Sales' },
+];
+
+function SecurityPage() {
+  return (
+    <div className={styles.configPageWrap}>
+      <div className={styles.configPageHeader}>
+        <h2 className={styles.configPageTitle}>Security</h2>
+        <p className={styles.configPageDesc}>Configure and manage security settings from the <button className={styles.inlineLink}>Security page</button>.</p>
+      </div>
+
+      {securityPromos.map((promo) => (
+        <div key={promo.id} data-section={`security-${promo.id}`} className={styles.securityPromoCard}>
+          <h3 className={styles.securityPromoTitle}>{promo.title}</h3>
+          <p className={styles.securityPromoDesc}>{promo.desc}</p>
+          <div className={styles.securityPromoActions}>
+            <button className={styles.securityPromoCta}>{promo.cta}</button>
+            <button className={styles.securityPromoLearn}>Learn more</button>
+          </div>
+        </div>
+      ))}
+
+      <div data-section="security-ddos-mitigation" className={`${styles.card} ${styles.configCard}`}>
+        <div className={styles.configCardTitleRow}>
+          <h3 className={styles.configCardTitle}>Always-on DDoS mitigation</h3>
+          <span className={styles.enabledPill}>Enabled</span>
+        </div>
+        <p className={styles.configCardDesc}>Fastly's high-bandwidth globally distributed network was built with <button className={styles.inlineLink}>Always-on DDoS mitigation</button>.</p>
+      </div>
+
+      <div data-section="security-rate-limiting" className={`${styles.card} ${styles.configCard}`}>
+        <div className={styles.configContentHeader}>
+          <h3 className={styles.configCardTitle}>Rate Limiting</h3>
+        </div>
+        <p className={styles.configCardDesc}>Set up a Rate Limiting policy to control the rate of requests sent or received to prevent attacks. <button className={styles.inlineLink}>Learn more about Rate Limiting</button>.</p>
+        <p className={styles.configCardDesc}><button className={styles.inlineLink}>Rate Limiting</button> has not been enabled on this account. To enable Rate Limiting, contact <button className={styles.inlineLink}>Fastly Sales</button>.</p>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Content page ─── */
+function ContentPage() {
+  return (
+    <div className={styles.configPageWrap}>
+      {/* Headers */}
+      <div data-section="content-headers" className={styles.configPageWrap}>
+        <h2 className={styles.configPageTitle}>Headers</h2>
+        <div className={`${styles.card} ${styles.configCard}`}>
+          <button className={styles.addDomainBtn}><Icon name="add" size={20} /> Create a header</button>
+        </div>
+        <div className={`${styles.card} ${styles.configCard}`}>
+          <div className={styles.headerItemRow}>
+            <div className={styles.headerItemLeft}>
+              <span className={styles.headerItemName}>Enable HSTS</span>
+              <span className={styles.headerItemGenerated}>Generated by <button className={styles.inlineLink}>force TLS and enable HSTS</button></span>
+            </div>
+          </div>
+          <span className={styles.headerItemType}>Response / Set</span>
+          <button className={styles.moreDetailsBtn}>Show all details <Icon name="chevron-down" size={16} /></button>
+        </div>
+      </div>
+
+      {/* Compression */}
+      <div data-section="content-compression" className={styles.configPageWrap}>
+        <h2 className={styles.configPageTitle}>Compression</h2>
+        <p className={styles.configPageDesc}>Compress content to transfer data faster. Our guide to <button className={styles.inlineLink}>compression</button>.</p>
+
+        <div className={styles.configPageWrap}>
+          <div className={styles.configCardTitleRow}>
+            <h3 className={styles.configSectionSubtitle}>Select compression format</h3>
+            <span className={styles.versionedPill}>Immediate update</span>
+            <Icon name="help" size={20} style={{ color: 'var(--text-secondary)' }} />
+          </div>
+          <p className={styles.configCardDesc}>Select the format for compression on this service.</p>
+          <div className={`${styles.card} ${styles.configCard}`}>
+            <label className={styles.radioRow}>
+              <input type="radio" name="compression" className={styles.radioInput} />
+              <div className={styles.radioContent}>
+                <span className={styles.radioLabel}>Use Brotli compression when available</span>
+                <span className={styles.radioDesc}>Include support for Brotli compression on this service. We will default to Brotli compression whenever browser support for it is available. When it isn't, we will use gzip compression.</span>
+              </div>
+            </label>
+            <label className={styles.radioRow}>
+              <input type="radio" name="compression" className={styles.radioInput} defaultChecked />
+              <div className={styles.radioContent}>
+                <span className={styles.radioLabel}>Use gzip only compression</span>
+                <span className={styles.radioDesc}>Include support for gzip compression on this service. Do not use Brotli compression.</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div className={styles.configPageWrap}>
+          <h3 className={styles.configSectionSubtitle}>Set up compression policy</h3>
+          <div className={styles.toggleCard}>
+            <div className={styles.toggleRow}>
+              <span className={styles.togglePill}>ON</span>
+              <div className={styles.toggleContent}>
+                <span className={styles.toggleTitle}>Use default compression policy</span>
+                <span className={styles.configCardDesc}>Get started with compression using Fastly's recommended file extensions and content types for gzip and Brotli formats.</span>
+                <button className={styles.inlineLink}>Show the defaults</button>
+              </div>
+            </div>
+          </div>
+          <p className={styles.configCardDesc}>With advanced compression you can customize the exact file extensions and content types to compress under specific conditions.</p>
+          <div className={`${styles.card} ${styles.configCard}`}>
+            <button className={styles.addDomainBtn}><Icon name="add" size={20} /> Set up advanced compression</button>
+          </div>
+        </div>
+      </div>
+
+      {/* Responses */}
+      <div data-section="content-responses" className={styles.configPageWrap}>
+        <h2 className={styles.configPageTitle}>Responses</h2>
+        <div className={styles.toggleCard}>
+          <h3 className={styles.configCardTitle}>Synthetic responses</h3>
+          <p className={styles.configCardDesc}>Let Fastly serve your static HTML or TXT files. Our guide to <button className={styles.inlineLink}>synthetic responses</button>.</p>
+          {[
+            { name: '404 page', type: 'HTML response', preview: '<!DOCTYPE html>…' },
+            { name: '503 page', type: 'HTML response', preview: '<!DOCTYPE html>…' },
+            { name: 'robots.txt', type: 'TXT response', preview: 'User-Agent: *…' },
+          ].map((resp, i) => (
+            <div key={i} className={styles.syntheticResponseRow}>
+              <div className={styles.syntheticResponseHeader}>
+                <span className={styles.togglePillOff}>OFF</span>
+                <span className={styles.syntheticResponseName}>{resp.name}</span>
+              </div>
+              <p className={styles.configCardDesc}>You can style this response to look like your application.</p>
+              <div className={styles.codePreview}>
+                <span className={styles.codePreviewLabel}>{resp.type}</span>
+                <span className={styles.codePreviewContent}>{resp.preview}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+        <p className={styles.configCardDesc}>With advanced responses you can customize the response body, status code, and MIME type of your response.</p>
+        <div className={`${styles.card} ${styles.configCard}`}>
+          <button className={styles.addDomainBtn}><Icon name="add" size={20} /> Set up advanced response</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Logging page ─── */
+const loggingEndpoints = [
+  'Amazon Kinesis Data Streams', 'Amazon S3', 'Apache Kafka', 'Datadog', 'Elasticsearch',
+  'FTP', 'Google BigQuery', 'Google Cloud Storage', 'Grafana Cloud Logs', 'HTTPS',
+  'Google Cloud Pub/Sub', 'Heroku Logplex', 'Honeycomb', 'LogDNA (via Syslog)', 'Loggly',
+  'Logshuttle', 'Microsoft Azure Blob Storage', 'New Relic Logs', 'New Relic OTLP',
+  'Openstack', 'Papertrail', 'Rackspace Cloud Files', 'Scalyr', 'SFTP',
+  'Spaces by DigitalOcean', 'Splunk', 'Sumologic', 'Syslog',
+];
+
+function LoggingPage() {
+  return (
+    <div className={styles.configPageWrap}>
+      <div className={styles.configPageHeader}>
+        <h2 className={styles.configPageTitle}>Choose your logging endpoint</h2>
+        <p className={styles.configPageDesc}>For more information, read our <button className={styles.inlineLink}>logging documentation</button>.</p>
+      </div>
+      <div className={styles.endpointList}>
+        {loggingEndpoints.map((ep) => (
+          <div key={ep} className={styles.endpointRow}>
+            <span className={styles.endpointName}>{ep}</span>
+            <div className={styles.endpointActions}>
+              <button className={styles.inlineLink}>Documentation</button>
+              <button className={styles.addDomainBtn}><Icon name="add" size={20} /> Create endpoint</button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ─── VCL page ─── */
+function VclPage() {
+  const [activeTab, setActiveTab] = useState<'snippets' | 'custom' | 'complete'>('snippets');
+
+  const vclCode = `# Noticing changes to your VCL? The event log
+# (https://docs.fastly.com/en/guides/reviewing-service-activity-with-the-event-log)
+# in the web interface shows changes to your service's configurations and the
+# change log on developer.fastly.com (https://developer.fastly.com/reference/changes/vcl/)
+# provides info on changes to the Fastly-provided VCL itself.
+pragma optional_param geoip_opt_in true;
+pragma optional_param max_object_size 52428800;
+pragma optional_param smiss_max_object_size 52428800;
+pragma optional_param fetchless_purge_all 1;
+pragma optional_param chash_randomize_on_pass true;
+pragma optional_param default_ssl_check_cert 1;
+pragma optional_param max_backends 20;
+pragma optional_param customer_id "6MIv9yBm7CPkS96GbCByMB";
+C!
+W!
+# Backends
+backend F_Host_1 {
+    .between_bytes_timeout = 10s;
+    .connect_timeout = 1s;
+    .first_byte_timeout = 15s;
+    .host = "192.178.12.12";
+    .max_connections = 200;
+    .port = "80";
+    .share_key = "ngrfSqoDLkLxShlCB25wP5";
+}`;
+
+  return (
+    <div className={styles.configPageWrap}>
+      <div className={styles.configPageHeader}>
+        <h2 className={styles.configPageTitle}>VCL</h2>
+        <div className={styles.vclSubheader}>
+          <span className={styles.configCardDesc}>313 lines</span>
+          <span className={styles.vclSep} />
+          <span className={styles.vclErrorDot} />
+          <span className={styles.configCardDesc}>1 error</span>
+          <span className={styles.vclSep} />
+          <span className={styles.vclWarningDot} />
+          <span className={styles.configCardDesc}>1 warning</span>
+        </div>
+      </div>
+      <div className={`${styles.card} ${styles.configCard}`} style={{ padding: 0 }}>
+        <div className={styles.vclTabBar}>
+          <div className={styles.vclTabs}>
+            {(['snippets', 'custom', 'complete'] as const).map((tab) => (
+              <button
+                key={tab}
+                className={activeTab === tab ? styles.vclTabActive : styles.vclTabInactive}
+                onClick={() => setActiveTab(tab)}
+              >
+                {tab === 'snippets' ? 'VCL snippets' : tab === 'custom' ? 'Custom VCL' : 'Complete VCL'}
+              </button>
+            ))}
+          </div>
+          <button className={styles.expandAllLink}>
+            <Icon name="export" size={20} /> Fullscreen
+          </button>
+        </div>
+        <div data-section={`vcl-${activeTab}`} className={styles.vclContent}>
+          {activeTab === 'complete' ? (
+            <pre className={styles.vclCodeBlock}><code>{vclCode}</code></pre>
+          ) : (
+            <div className={styles.vclEmptyState}>
+              <Icon name="dev-tools" size={80} />
+              <h3 className={styles.vclEmptyTitle}>
+                {activeTab === 'snippets' ? 'No VCL snippets added' : 'No Custom VCL added'}
+              </h3>
+              <p className={styles.configCardDesc} style={{ textAlign: 'center' }}>
+                {activeTab === 'snippets'
+                  ? 'VCL snippets are blocks of VCL logic that are inserted into your configuration. Go to our documentation to learn more.'
+                  : 'Create your own Varnish Configuration Language (VCL) files with specialized configurations.'}
+              </p>
+              <div className={styles.vclEmptyActions}>
+                <button className={styles.addDomainBtn}>
+                  <Icon name="add" size={20} /> {activeTab === 'snippets' ? 'Add a VCL snippet' : 'Upload custom VCL'}
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Conditions page ─── */
+function ConditionsPage() {
+  return (
+    <div className={styles.configPageWrap}>
+      <div className={styles.configPageHeader}>
+        <h2 className={styles.configPageTitle}>Manage conditions</h2>
+        <p className={styles.configPageDesc}>An overview of how conditions are used and mapped in your service. Learn more about <button className={styles.inlineLink}>how to apply conditions and troubleshooting tips</button>.</p>
+        <div className={styles.configPageHeaderTop}>
+          <button className={styles.addDomainBtn}><Icon name="add" size={20} /> Create Condition</button>
+          <div style={{ flex: 1 }} />
+          <div className={styles.configSearchInput}>
+            <Icon name="search" size={20} style={{ color: 'var(--text-secondary)' }} />
+            <input type="text" placeholder="Search conditions..." />
+          </div>
+        </div>
+      </div>
+      <div className={styles.conditionSection}>
+        <h3 className={styles.configSectionSubtitle}>1 Request condition</h3>
+        <div className={`${styles.card} ${styles.configCard}`}>
+          <div className={styles.conditionHeader}>
+            <div className={styles.conditionHeaderLeft}>
+              <span className={styles.conditionIf}>IF</span>
+              <button className={styles.inlineLink}>test</button>
+              <button className={styles.configRowAction}><Icon name="edit" size={20} /></button>
+            </div>
+            <button className={styles.configRowAction}><Icon name="trash" size={20} /></button>
+          </div>
+          <span className={styles.hostSubtext}>test</span>
+          <div className={styles.conditionDetailsRow}>
+            <span className={styles.hostDetailLabel}>Priority</span>
+            <span className={styles.hostDetailValue}>10</span>
+            <span className={styles.hostDetailLabel}>Type</span>
+            <span className={styles.hostDetailValue}>Request</span>
+          </div>
+          <div className={styles.conditionThen}>
+            <span className={styles.conditionThenLabel}>THEN</span>
+            <span className={styles.configEmptyText} style={{ fontStyle: 'italic' }}>Not applied to anything</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Dictionaries page ─── */
+function DictionariesPage() {
+  return (
+    <div className={styles.configPageWrap}>
+      <div className={styles.configPageHeader}>
+        <h2 className={styles.configPageTitle}>Dictionaries</h2>
+        <p className={styles.configPageDesc}>A list of key-value pairs that can be referenced and used by your custom edge logic (such as VCL snippets or custom VCL). Our guide to <button className={styles.inlineLink}>working with dictionaries</button>.</p>
+      </div>
+      <div className={`${styles.card} ${styles.configCard}`}>
+        <p className={styles.configEmptyText} style={{ fontStyle: 'italic' }}>There are no dictionaries.</p>
+        <button className={styles.addDomainBtn}><Icon name="add" size={20} /> Create your first dictionary</button>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Access control lists page ─── */
+function AclPage() {
+  return (
+    <div className={styles.configPageWrap}>
+      <div className={styles.configPageHeader}>
+        <h2 className={styles.configPageTitle}>Access control lists</h2>
+        <p className={styles.configPageDesc}>Filter traffic by specifying which IP addresses should be allowed or blocked. You must use a condition to reference a list and specify a response.</p>
+      </div>
+      <div className={`${styles.card} ${styles.configCard}`}>
+        <p className={styles.configEmptyText} style={{ fontStyle: 'italic' }}>There are no ACLs.</p>
+        <button className={styles.addDomainBtn}><Icon name="add" size={20} /> Create your first ACL</button>
       </div>
     </div>
   );
