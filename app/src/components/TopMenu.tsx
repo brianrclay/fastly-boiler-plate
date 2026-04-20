@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Icon } from './Icon';
 import { HelpMenu } from './HelpMenu';
 import { AvatarMenu } from './AvatarMenu';
@@ -40,6 +40,18 @@ export function TopMenu({ onMenuClick, onBellClick, onLogoClick, onNavigate, isD
   const toggleAppSwitcher = useCallback(() => {
     closeAll();
     setAppSwitcherOpen((prev) => !prev);
+  }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== '/') return;
+      const tag = (e.target as HTMLElement)?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || (e.target as HTMLElement)?.isContentEditable) return;
+      e.preventDefault();
+      setSearchOpen(true);
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
   }, []);
 
   return (

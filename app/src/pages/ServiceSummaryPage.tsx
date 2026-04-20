@@ -146,27 +146,7 @@ export function ServiceSummaryPage({ serviceName, pageVisible = true, onNavigate
               <button className={styles.detailsToggle}>Version details <Icon name="chevron-down" size={20} /></button>
             </div>
           ) : (
-            <div className={styles.versionToolbar}>
-              <div className={styles.versionToolbarTop}>
-                <div className={styles.versionToolbarLeft}>
-                  <span className={styles.versionToolbarTitle}>Version {m.latestVersion}</span>
-                  <button className={styles.versionDropdownBtn}>
-                    <Icon name="chevron-down" size={16} />
-                  </button>
-                  <span className={styles.configDraftPill}>
-                    <Icon name="edit" size={16} />
-                    Draft
-                  </span>
-                </div>
-                <div className={styles.versionToolbarActions}>
-                  <button className={styles.actionLink}><Icon name="chevron-left" size={20} /> Show VCL</button>
-                  <button className={styles.actionLink}><Icon name="add" size={20} /> Diff versions</button>
-                  <button className={styles.cloneBtn}><Icon name="copy" size={20} /> Clone</button>
-                  <button className={styles.activateBtn}>Activate</button>
-                </div>
-              </div>
-              <button className={styles.commentLink}><Icon name="edit-comment" size={20} /> Add version comment</button>
-            </div>
+            <VersionToolbar latestVersion={m.latestVersion} totalVersions={m.totalVersions} />
           )}
 
           {activeTab === 'configuration' && (
@@ -217,6 +197,7 @@ export function ServiceSummaryPage({ serviceName, pageVisible = true, onNavigate
             </table>
             <div className={styles.tablePagination}>
               <span className={styles.paginationLabel}>Results per page: <button className={styles.paginationSelect}>5 <Icon name="chevron-down" size={20} /></button></span>
+              <div className={styles.paginationSpacer} />
               <span className={styles.paginationInfo}>1–{versions.length} of {versions.length} results</span>
               <div className={styles.paginationArrows}>
                 <button className={styles.paginationArrow}><Icon name="chevron-left" size={20} /></button>
@@ -325,6 +306,7 @@ export function ServiceSummaryPage({ serviceName, pageVisible = true, onNavigate
             </table>
             <div className={styles.tablePagination}>
               <span className={styles.paginationLabel}>Results per page: <button className={styles.paginationSelect}>10 <Icon name="chevron-down" size={20} /></button></span>
+              <div className={styles.paginationSpacer} />
               <span className={styles.paginationInfo}>1–10 results</span>
               <div className={styles.paginationArrows}>
                 <button className={styles.paginationArrow}><Icon name="chevron-left" size={20} /></button>
@@ -336,6 +318,84 @@ export function ServiceSummaryPage({ serviceName, pageVisible = true, onNavigate
         </div>
         <Footer />
       </main>
+    </>
+  );
+}
+
+/* ─── Version toolbar with sticky behavior and switcher ─── */
+function VersionToolbar({ latestVersion, totalVersions }: { latestVersion: number; totalVersions: number }) {
+  const [isSticky, setIsSticky] = useState(false);
+  const [showSwitcher, setShowSwitcher] = useState(false);
+  const toolbarRef = useRef<HTMLDivElement>(null);
+  const sentinelRef = useRef<HTMLDivElement>(null);
+  const switcherDD = useDropdown();
+
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsSticky(!entry.isIntersecting),
+      { threshold: 0 }
+    );
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, []);
+
+  const versionData = Array.from({ length: Math.min(totalVersions, 5) }, (_, i) => {
+    const ver = latestVersion - i;
+    const status = i === 0 ? 'Draft' : i === 1 ? 'Production' : i === 2 ? 'Staging' : 'Locked';
+    const edited = i === 0 ? 'Today' : `${i * 5 + 1}d ago`;
+    return { version: ver, status, edited, comment: i > 0 ? 'Lorem ipsum dolor sit amet consectetur...' : 'No version comment' };
+  });
+
+  return (
+    <>
+      <div ref={sentinelRef} />
+      <div ref={toolbarRef} className={`${styles.versionToolbar} ${isSticky ? styles.versionToolbarSticky : ''}`}>
+        <div className={styles.versionToolbarTop}>
+          <div className={styles.versionToolbarLeft}>
+            <span className={isSticky ? styles.versionToolbarTitleSmall : styles.versionToolbarTitle}>Version {latestVersion}</span>
+            <div className={styles.ddWrapper} ref={switcherDD.ref}>
+              <button className={styles.versionDropdownBtn} onClick={() => switcherDD.setOpen(!switcherDD.open)}>
+                <Icon name="chevron-down" size={16} />
+              </button>
+              {switcherDD.open && (
+                <div className={styles.versionSwitcher}>
+                  <div className={styles.versionSwitcherArrow} />
+                  {versionData.map((v, i) => (
+                    <div key={v.version} className={`${styles.versionSwitcherItem} ${i === 0 ? styles.versionSwitcherItemSelected : ''}`} onClick={() => switcherDD.setOpen(false)}>
+                      <div className={styles.versionSwitcherRow}>
+                        <div className={styles.versionSwitcherLeft}>
+                          <span className={`${styles.versionSwitcherVersion} ${i === 0 ? styles.versionSwitcherVersionActive : ''}`}>Version {v.version}</span>
+                          <span className={`${styles.versionSwitcherPill} ${v.status === 'Draft' ? styles.pillDraft : v.status === 'Production' ? styles.configPillProduction : v.status === 'Staging' ? styles.configPillStaging : styles.pillLocked}`}>{v.status}</span>
+                        </div>
+                        <span className={styles.versionSwitcherEdited}>Edited: {v.edited}</span>
+                      </div>
+                      <div className={styles.versionSwitcherComment}>
+                        <Icon name="edit-comment" size={16} style={{ color: 'var(--text-secondary)', flexShrink: 0 }} />
+                        <span>{v.comment}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            <span className={styles.configDraftPill}>
+              <Icon name="edit" size={16} />
+              Draft
+            </span>
+          </div>
+          <div className={styles.versionToolbarActions}>
+            <button className={styles.actionLink}><Icon name="show-vcl" size={isSticky ? 16 : 20} /> Show VCL</button>
+            <button className={styles.actionLink}><Icon name="diff" size={isSticky ? 16 : 20} /> Diff versions</button>
+            <button className={styles.cloneBtn}><Icon name="copy" size={isSticky ? 16 : 20} /> Clone</button>
+            <button className={styles.activateBtn}>Activate</button>
+          </div>
+        </div>
+        {!isSticky && (
+          <button className={styles.commentLink}><Icon name="edit-comment" size={20} /> Add version comment</button>
+        )}
+      </div>
     </>
   );
 }
@@ -408,12 +468,35 @@ const configNavItems: ConfigNavItem[] = [
 function ConfigurationContent({ serviceName: _serviceName }: { serviceName: string }) {
   const [activeSection, setActiveSection] = useState('domains');
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
+  const [navSearch, setNavSearch] = useState('');
   const layoutRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+
+  const filteredNavItems = navSearch
+    ? configNavItems.filter((item) => {
+        const q = navSearch.toLowerCase();
+        if (item.label.toLowerCase().includes(q)) return true;
+        if (item.children?.some((c) => c.label.toLowerCase().includes(q))) return true;
+        return false;
+      }).map((item) => {
+        if (!item.children) return item;
+        const q = navSearch.toLowerCase();
+        if (item.label.toLowerCase().includes(q)) return item;
+        return { ...item, children: item.children.filter((c) => c.label.toLowerCase().includes(q)) };
+      })
+    : configNavItems;
 
   const handleToggleExpand = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
     setExpandedItems((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const scrollToElement = (el: Element) => {
+    const scrollContainer = el.closest(`.${styles.main}`);
+    if (!scrollContainer) { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
+    const stickyHeight = 60;
+    const elTop = el.getBoundingClientRect().top - scrollContainer.getBoundingClientRect().top + scrollContainer.scrollTop;
+    scrollContainer.scrollTo({ top: elTop - stickyHeight, behavior: 'smooth' });
   };
 
   const handleNavClick = (item: ConfigNavItem) => {
@@ -422,7 +505,7 @@ function ConfigurationContent({ serviceName: _serviceName }: { serviceName: stri
       setExpandedItems((prev) => ({ ...prev, [item.id]: true }));
     }
     requestAnimationFrame(() => {
-      layoutRef.current?.scrollIntoView({ block: 'start' });
+      if (contentRef.current) scrollToElement(contentRef.current);
     });
   };
 
@@ -430,7 +513,7 @@ function ConfigurationContent({ serviceName: _serviceName }: { serviceName: stri
     setActiveSection(parentId);
     requestAnimationFrame(() => {
       const el = contentRef.current?.querySelector(`[data-section="${childId}"]`);
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (el) scrollToElement(el);
     });
   };
 
@@ -439,10 +522,10 @@ function ConfigurationContent({ serviceName: _serviceName }: { serviceName: stri
       <div className={styles.configSidebar}>
         <div className={styles.configSearch}>
           <Icon name="search" size={20} style={{ color: 'var(--text-secondary)' }} />
-          <input type="text" placeholder="Search all settings" />
+          <input type="text" placeholder="Search all settings" value={navSearch} onChange={(e) => setNavSearch(e.target.value)} />
         </div>
         <nav className={styles.configNav}>
-          {configNavItems.map((item) => {
+          {filteredNavItems.map((item) => {
             const isActive = activeSection === item.id;
             const isExpanded = !!expandedItems[item.id];
             const hasChildren = !!item.children;
@@ -510,9 +593,11 @@ function ConfigPage({ pageId }: { pageId: string }) {
   switch (pageId) {
     case 'domains': return <DomainsPage />;
     case 'origins': return <OriginsPage />;
+    case 'settings': return <SettingsPage />;
     case 'content': return <ContentPage />;
     case 'logging': return <LoggingPage />;
     case 'vcl': return <VclPage />;
+    case 'image-optimizer': return <ImageOptimizerPage />;
     case 'conditions': return <ConditionsPage />;
     case 'dictionaries': return <DictionariesPage />;
     case 'acl': return <AclPage />;
@@ -561,7 +646,7 @@ function DomainsPage() {
     <div className={styles.configPageWrap}>
       <div className={styles.configPageHeader}>
         <div className={styles.configPageHeaderTop}>
-          <h2 className={styles.configPageTitle}>Domains</h2>
+          <h2 className={styles.configPageTitleH2}>Domains</h2>
           <button className={styles.addDomainBtn}><Icon name="add" size={20} /> Add domain</button>
         </div>
         <p className={styles.configPageDesc}>Domains route requests to your service. Link them to your origin (content source) when setting up the service.</p>
@@ -688,6 +773,7 @@ function OriginsPage() {
         </div>
         <div className={styles.tablePagination}>
           <span className={styles.paginationLabel}>Results per page: <button className={styles.paginationSelect}>5 <Icon name="chevron-down" size={20} /></button></span>
+          <div className={styles.paginationSpacer} />
           <span className={styles.paginationInfo}>30 results</span>
           <div className={styles.paginationArrows}>
             <button className={styles.paginationArrow}><Icon name="chevron-left" size={20} /></button>
@@ -742,6 +828,7 @@ function OriginsPage() {
         </div>
         <div className={styles.tablePagination}>
           <span className={styles.paginationLabel}>Results per page: <button className={styles.paginationSelect}>5 <Icon name="chevron-down" size={20} /></button></span>
+          <div className={styles.paginationSpacer} />
           <span className={styles.paginationInfo}>2 results</span>
           <div className={styles.paginationArrows}>
             <button className={styles.paginationArrow}><Icon name="chevron-left" size={20} /></button>
@@ -798,104 +885,257 @@ function SecurityPage() {
   );
 }
 
-/* ─── Content page ─── */
-function ContentPage() {
+/* ─── Settings page ─── */
+function SettingsPage() {
   return (
     <div className={styles.configPageWrap}>
-      {/* Headers */}
-      <div data-section="content-headers" className={styles.configPageWrap}>
-        <h2 className={styles.configPageTitle}>Headers</h2>
-        <div className={`${styles.card} ${styles.configCard}`}>
-          <button className={styles.addDomainBtn}><Icon name="add" size={20} /> Create a header</button>
+      {/* IP block list */}
+      <div data-section="settings-ip-block-list" className={`${styles.card} ${styles.configCard}`}>
+        <div className={styles.settingsToggleRow}>
+          <div className={styles.settingsToggle} />
+          <div className={styles.settingsToggleInfo}>
+            <h4 className={styles.settingsToggleTitle}>IP block list</h4>
+            <p className={styles.settingsToggleDesc}>Restrict access by blocking known bad IPs. Our guide to <button className={styles.inlineLink}>IP block lists</button>.</p>
+          </div>
         </div>
+        <table className={styles.table}>
+          <thead><tr><th>Address</th><th>Comment</th><th>Date added</th></tr></thead>
+          <tbody><tr><td>—</td><td>—</td><td>—</td></tr></tbody>
+        </table>
+        <p className={styles.settingsAdvancedNote}>No addresses</p>
+        <p className={styles.settingsAdvancedNote}>Advanced: Other types of access control lists are supported in <button className={styles.inlineLink}>ACLs</button>.</p>
+      </div>
+
+      {/* Override host */}
+      <div data-section="settings-override-host" className={`${styles.card} ${styles.configCard}`}>
+        <div className={styles.settingsToggleRow}>
+          <div className={styles.settingsToggle} />
+          <div className={styles.settingsToggleInfo}>
+            <h4 className={styles.settingsToggleTitle}>Override host</h4>
+            <p className={styles.settingsToggleDesc}>Override the host header from any host sending requests to your origin. To override a specific host, edit your origins instead. Our guide to <button className={styles.inlineLink}>override host</button>.</p>
+          </div>
+        </div>
+        <div className={styles.settingsDetailRow}>
+          <span className={styles.settingsDetailLabel}>Override host header:</span>
+          <span className={styles.settingsDetailValue}>None</span>
+        </div>
+      </div>
+
+      {/* Serve stale */}
+      <div data-section="settings-serve-stale" className={`${styles.card} ${styles.configCard}`}>
+        <div className={styles.settingsToggleRow}>
+          <div className={styles.settingsToggle} />
+          <div className={styles.settingsToggleInfo}>
+            <h4 className={styles.settingsToggleTitle}>Serve stale content on origin failure</h4>
+            <p className={styles.settingsToggleDesc}>When Fastly can't connect to the origin, continue to serve the current "stale" content to satisfy requests instead of showing end-users an error. Our guide to <button className={styles.inlineLink}>serving stale content</button>.</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Force TLS and HSTS */}
+      <div data-section="settings-force-tls" className={`${styles.card} ${styles.configCard} ${styles.settingsCardActiveGreen}`}>
+        <div className={styles.settingsToggleRow}>
+          <div className={styles.settingsToggleOn} />
+          <div className={styles.settingsToggleInfo}>
+            <h4 className={styles.settingsToggleTitle}>Force TLS and enable HSTS</h4>
+            <p className={styles.settingsToggleDesc}>Force TLS and HTTP Strict Transport Security (HSTS) to ensure that every request is secure. This setting depends on TLS being enabled on your domains. We recommend switching to production (1 year) after testing with a short duration. Our guide to <button className={styles.inlineLink}>TLS and HSTS</button>.</p>
+          </div>
+        </div>
+        <div className={styles.settingsHstsDuration}>
+          <span className={styles.settingsHstsDurationLabel}>Define HSTS duration <span className={styles.settingsWarningDot} /> :</span>
+          <div className={styles.settingsRadioGroup}>
+            <label className={`${styles.settingsRadioItem} ${styles.settingsRadioItemSelected}`}>
+              <input type="radio" name="hsts" defaultChecked /> Testing - 5 minutes <span className={styles.settingsDetailValueMono}>[max-age=300]</span>
+            </label>
+            <label className={styles.settingsRadioItem}>
+              <input type="radio" name="hsts" /> Production - 1 year <span className={styles.settingsDetailValueMono}>[max-age=31557600]</span>
+            </label>
+          </div>
+        </div>
+        <p className={styles.settingsAdvancedNote}>Advanced: For more fine grained control, <button className={styles.inlineLink}>set up HSTS with a custom header</button>.</p>
+      </div>
+
+      {/* HTTP/3 */}
+      <div data-section="settings-http3" className={`${styles.card} ${styles.configCard}`}>
+        <div className={styles.settingsToggleRow}>
+          <div className={styles.settingsToggle} />
+          <div className={styles.settingsToggleInfo}>
+            <h4 className={styles.settingsToggleTitle}>HTTP/3</h4>
+            <p className={styles.settingsToggleDesc}>Advertise QUIC support, allowing clients to switch to HTTP/3 for future requests. Requires you to enable TLS on domains in this service. Our <button className={styles.inlineLink}>guide to QUIC and HTTPS</button>.</p>
+          </div>
+        </div>
+      </div>
+
+      {/* WebSockets */}
+      <div data-section="settings-websockets" className={styles.settingsPromoCard}>
+        <h3 className={styles.settingsCardTitle}>WebSockets</h3>
+        <p className={styles.settingsCardDesc}>Enable WebSockets to interact with clients in real-time, and reduce latency inherent in unidirectional communication. Our guide to <button className={styles.inlineLink}>WebSockets</button>.</p>
+        <div className={styles.settingsPromoActions}>
+          <button className={styles.editBtn}>Purchase WebSockets</button>
+          <button className={styles.addDomainBtn}>Learn more</button>
+        </div>
+      </div>
+
+      {/* Fallback TTL */}
+      <div data-section="settings-apex-redirects" className={`${styles.card} ${styles.configCard} ${styles.settingsCardActiveGreen}`}>
+        <div className={styles.settingsCardHeader}>
+          <h3 className={styles.settingsCardTitle}>Fallback TTL</h3>
+          <p className={styles.settingsCardDesc}>Edit the fallback TTL (3600 sec by default) to customize the catch-all TTL used for objects that don't have a specific TTL set. Our guide to <button className={styles.inlineLink}>fallback TTL</button>.</p>
+        </div>
+        <div className={styles.settingsDetailRow}>
+          <span className={styles.settingsDetailLabel}>Fallback TTL (sec):</span>
+          <span style={{ color: 'var(--text-action)', fontWeight: 600, fontSize: 14 }}>3600</span>
+          <Icon name="edit" size={16} style={{ color: 'var(--text-action)' }} />
+        </div>
+      </div>
+
+      {/* Redirect traffic to www subdomains */}
+      <div className={`${styles.card} ${styles.configCard} ${styles.settingsCardActiveGreen}`}>
+        <div className={styles.settingsCardHeader}>
+          <h3 className={styles.settingsCardTitle}>Redirect traffic to www subdomains</h3>
+          <p className={styles.settingsCardDesc}>Redirect traffic for apex domains, subdomains, or wildcard domains from this service to a www subdomain so that you always arrive in a consistent location. For example, the example.com apex domain would be redirected to www.example.com. Our guide to <button className={styles.inlineLink}>redirecting traffic</button>.</p>
+        </div>
+        <table className={styles.table}>
+          <thead><tr><th>Domain</th><th>Status</th><th>Date Added</th></tr></thead>
+          <tbody><tr><td>—</td><td>—</td><td>—</td></tr></tbody>
+        </table>
+        <button className={styles.addDomainBtn}><Icon name="add" size={20} /> Add apex redirect</button>
+      </div>
+
+      {/* Request settings */}
+      <div data-section="settings-request-settings" className={styles.configPageWrap}>
+        <h3 className={styles.settingsCardTitle}>Request settings</h3>
+        <p className={styles.settingsCardDesc}>Request Settings are used to customize Fastly's request handling. When used with <button className={styles.inlineLink}>Conditions</button> the Request Settings allow you to fine tune how specific types of requests are handled.</p>
+        <button className={styles.addDomainBtn}><Icon name="add" size={20} /> Create request setting</button>
         <div className={`${styles.card} ${styles.configCard}`}>
           <div className={styles.headerItemRow}>
             <div className={styles.headerItemLeft}>
-              <span className={styles.headerItemName}>Enable HSTS</span>
+              <span className={styles.headerItemName}>Force TLS</span>
               <span className={styles.headerItemGenerated}>Generated by <button className={styles.inlineLink}>force TLS and enable HSTS</button></span>
             </div>
+            <button className={styles.configRowAction}><Icon name="more" size={20} /></button>
           </div>
-          <span className={styles.headerItemType}>Response / Set</span>
-          <button className={styles.moreDetailsBtn}>Show all details <Icon name="chevron-down" size={16} /></button>
+          <button className={styles.moreDetailsBtn}>Show details <Icon name="chevron-down" size={16} /></button>
         </div>
+      </div>
+
+      {/* Cache settings */}
+      <div data-section="settings-cache-settings" className={styles.configPageWrap}>
+        <h3 className={styles.settingsCardTitle}>Cache settings</h3>
+        <p className={styles.settingsCardDesc}>Cache Settings <button className={styles.inlineLink}>controls how caching is performed</button> on Fastly. When used with <button className={styles.inlineLink}>Conditions</button>, the Cache Settings provide you with fine grain control over how long content persists in the cache.</p>
+        <div className={`${styles.card} ${styles.configCard}`}>
+          <p className={styles.configEmptyText} style={{ fontStyle: 'italic' }}>There are no cache settings.</p>
+          <button className={styles.addDomainBtn}><Icon name="add" size={20} /> Create your first cache setting</button>
+        </div>
+      </div>
+
+      {/* Cache reservation */}
+      <div className={styles.configPageWrap}>
+        <h3 className={styles.settingsCardTitle}>Cache reservation</h3>
+        <p className={styles.settingsCardDesc}>Cache Reservation provides a custom caching layer at Fastly's edge where you can reserve cache space specifically for your content at Fastly shielding locations and thus minimize content eviction in these multi-tenant environments. By prioritizing your content's cache storage, Cache Reservation allows that content to stay in cache longer, thereby optimizing your origin's offload from any CDN, including Fastly, and reducing your cloud egress costs.</p>
+        <p className={styles.settingsCardDesc}>Our guide to <button className={styles.inlineLink}>Cache reservation</button>.</p>
+        <p className={styles.settingsCardDesc}>Cache reservation is not available for trial.</p>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Content page ─── */
+function ContentPage() {
+  const [compressionFormat, setCompressionFormat] = useState('brotli');
+  const [compressionPolicy, setCompressionPolicy] = useState('default');
+
+  return (
+    <div className={styles.configPageWrap}>
+      {/* Request settings */}
+      <div data-section="content-headers" className={`${styles.card} ${styles.configCard}`}>
+        <div className={styles.settingsCardHeader}>
+          <h3 className={styles.settingsCardTitle}>Header settings</h3>
+          <p className={styles.settingsCardDesc}>Lorem ipsum dolor sit amet consectetur. Ut sed amet tortor malesuada eu. Sit sed ut eget sed.</p>
+        </div>
+        <button className={styles.addDomainBtn}><Icon name="add" size={20} /> Create a header</button>
       </div>
 
       {/* Compression */}
-      <div data-section="content-compression" className={styles.configPageWrap}>
-        <h2 className={styles.configPageTitle}>Compression</h2>
-        <p className={styles.configPageDesc}>Compress content to transfer data faster. Our guide to <button className={styles.inlineLink}>compression</button>.</p>
-
-        <div className={styles.configPageWrap}>
-          <div className={styles.configCardTitleRow}>
-            <h3 className={styles.configSectionSubtitle}>Select compression format</h3>
-            <span className={styles.versionedPill}>Immediate update</span>
-            <Icon name="help" size={20} style={{ color: 'var(--text-secondary)' }} />
+      <div data-section="content-compression" className={`${styles.card} ${styles.configCard}`}>
+        <div className={styles.compressionCardLayout}>
+          <div className={styles.compressionToggleWrap}>
+            <div className={styles.settingsToggle} />
           </div>
-          <p className={styles.configCardDesc}>Select the format for compression on this service.</p>
-          <div className={`${styles.card} ${styles.configCard}`}>
-            <label className={styles.radioRow}>
-              <input type="radio" name="compression" className={styles.radioInput} />
-              <div className={styles.radioContent}>
-                <span className={styles.radioLabel}>Use Brotli compression when available</span>
-                <span className={styles.radioDesc}>Include support for Brotli compression on this service. We will default to Brotli compression whenever browser support for it is available. When it isn't, we will use gzip compression.</span>
-              </div>
-            </label>
-            <label className={styles.radioRow}>
-              <input type="radio" name="compression" className={styles.radioInput} defaultChecked />
-              <div className={styles.radioContent}>
-                <span className={styles.radioLabel}>Use gzip only compression</span>
-                <span className={styles.radioDesc}>Include support for gzip compression on this service. Do not use Brotli compression.</span>
-              </div>
-            </label>
-          </div>
-        </div>
+          <div className={styles.compressionContent}>
+            <div className={styles.settingsCardHeader}>
+              <h3 className={styles.settingsCardTitle}>Compression</h3>
+              <p className={styles.settingsCardDesc}>Compress content to transfer data faster. Our guide to compression.</p>
+            </div>
 
-        <div className={styles.configPageWrap}>
-          <h3 className={styles.configSectionSubtitle}>Set up compression policy</h3>
-          <div className={styles.toggleCard}>
-            <div className={styles.toggleRow}>
-              <span className={styles.togglePill}>ON</span>
-              <div className={styles.toggleContent}>
-                <span className={styles.toggleTitle}>Use default compression policy</span>
-                <span className={styles.configCardDesc}>Get started with compression using Fastly's recommended file extensions and content types for gzip and Brotli formats.</span>
-                <button className={styles.inlineLink}>Show the defaults</button>
+            <div className={styles.compressionSubsection}>
+              <h4 className={styles.compressionSubsectionTitle}>Compression format</h4>
+              <div className={styles.radioSelectRow}>
+                <label className={`${styles.radioSelectBox} ${compressionFormat === 'brotli' ? styles.radioSelectBoxSelected : ''}`}>
+                  <input type="radio" name="compressionFormat" className={styles.radioSelectInput} checked={compressionFormat === 'brotli'} onChange={() => setCompressionFormat('brotli')} />
+                  <div className={styles.radioSelectContent}>
+                    <span className={styles.radioSelectLabel}>Brotli</span>
+                    <span className={styles.radioSelectDesc}>Include support for Brotli compression on this service. We will default to Brotli compression whenever browser support for it is available. When it isn't, we will use gzip compression.</span>
+                  </div>
+                </label>
+                <label className={`${styles.radioSelectBox} ${compressionFormat === 'gzip' ? styles.radioSelectBoxSelected : ''}`}>
+                  <input type="radio" name="compressionFormat" className={styles.radioSelectInput} checked={compressionFormat === 'gzip'} onChange={() => setCompressionFormat('gzip')} />
+                  <div className={styles.radioSelectContent}>
+                    <span className={styles.radioSelectLabel}>gzip only</span>
+                    <span className={styles.radioSelectDesc}>Include support for gzip compression on this service. Do not use Brotli compression.</span>
+                  </div>
+                </label>
               </div>
             </div>
-          </div>
-          <p className={styles.configCardDesc}>With advanced compression you can customize the exact file extensions and content types to compress under specific conditions.</p>
-          <div className={`${styles.card} ${styles.configCard}`}>
-            <button className={styles.addDomainBtn}><Icon name="add" size={20} /> Set up advanced compression</button>
+
+            <div className={styles.compressionSubsection}>
+              <h4 className={styles.compressionSubsectionTitle}>Compression policy</h4>
+              <div className={styles.radioSelectRow}>
+                <label className={`${styles.radioSelectBox} ${compressionPolicy === 'default' ? styles.radioSelectBoxSelected : ''}`}>
+                  <input type="radio" name="compressionPolicy" className={styles.radioSelectInput} checked={compressionPolicy === 'default'} onChange={() => setCompressionPolicy('default')} />
+                  <div className={styles.radioSelectContent}>
+                    <span className={styles.radioSelectLabel}>Default</span>
+                    <span className={styles.radioSelectDesc}>Get started with compression using Fastly's recommended file extensions and content types for gzip and Brotli formats.</span>
+                  </div>
+                </label>
+                <label className={`${styles.radioSelectBox} ${compressionPolicy === 'advanced' ? styles.radioSelectBoxSelected : ''}`}>
+                  <input type="radio" name="compressionPolicy" className={styles.radioSelectInput} checked={compressionPolicy === 'advanced'} onChange={() => setCompressionPolicy('advanced')} />
+                  <div className={styles.radioSelectContent}>
+                    <span className={styles.radioSelectLabel}>Advanced policy</span>
+                    <span className={styles.radioSelectDesc}>With advanced compression you can customize the exact file extensions and content types to compress under specific conditions.</span>
+                  </div>
+                </label>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Responses */}
-      <div data-section="content-responses" className={styles.configPageWrap}>
-        <h2 className={styles.configPageTitle}>Responses</h2>
-        <div className={styles.toggleCard}>
-          <h3 className={styles.configCardTitle}>Synthetic responses</h3>
-          <p className={styles.configCardDesc}>Let Fastly serve your static HTML or TXT files. Our guide to <button className={styles.inlineLink}>synthetic responses</button>.</p>
-          {[
-            { name: '404 page', type: 'HTML response', preview: '<!DOCTYPE html>…' },
-            { name: '503 page', type: 'HTML response', preview: '<!DOCTYPE html>…' },
-            { name: 'robots.txt', type: 'TXT response', preview: 'User-Agent: *…' },
-          ].map((resp, i) => (
-            <div key={i} className={styles.syntheticResponseRow}>
-              <div className={styles.syntheticResponseHeader}>
-                <span className={styles.togglePillOff}>OFF</span>
-                <span className={styles.syntheticResponseName}>{resp.name}</span>
-              </div>
-              <p className={styles.configCardDesc}>You can style this response to look like your application.</p>
-              <div className={styles.codePreview}>
-                <span className={styles.codePreviewLabel}>{resp.type}</span>
-                <span className={styles.codePreviewContent}>{resp.preview}</span>
-              </div>
-            </div>
-          ))}
+      {/* Response settings */}
+      <div data-section="content-responses" className={`${styles.card} ${styles.configCard}`}>
+        <div className={styles.settingsCardHeader}>
+          <h3 className={styles.settingsCardTitle}>Response settings</h3>
+          <p className={styles.settingsCardDesc}>Let Fastly serve your static HTML or TXT files. Our guide to synthetic responses.</p>
         </div>
-        <p className={styles.configCardDesc}>With advanced responses you can customize the response body, status code, and MIME type of your response.</p>
-        <div className={`${styles.card} ${styles.configCard}`}>
-          <button className={styles.addDomainBtn}><Icon name="add" size={20} /> Set up advanced response</button>
+        <div className={styles.settingsToggleRow}>
+          <div className={styles.settingsToggle} />
+          <div className={styles.settingsToggleInfo}>
+            <h4 className={styles.settingsToggleTitle}>404 page</h4>
+            <p className={styles.settingsToggleDesc}>You can style this response to look like your application.</p>
+          </div>
+        </div>
+        <div className={styles.settingsToggleRow}>
+          <div className={styles.settingsToggle} />
+          <div className={styles.settingsToggleInfo}>
+            <h4 className={styles.settingsToggleTitle}>503 page</h4>
+            <p className={styles.settingsToggleDesc}>You can style this response to look like your application.</p>
+          </div>
+        </div>
+        <div className={styles.settingsToggleRow}>
+          <div className={styles.settingsToggle} />
+          <div className={styles.settingsToggleInfo}>
+            <h4 className={styles.settingsToggleTitle}>robots.txt</h4>
+          </div>
         </div>
       </div>
     </div>
@@ -903,32 +1143,21 @@ function ContentPage() {
 }
 
 /* ─── Logging page ─── */
-const loggingEndpoints = [
-  'Amazon Kinesis Data Streams', 'Amazon S3', 'Apache Kafka', 'Datadog', 'Elasticsearch',
-  'FTP', 'Google BigQuery', 'Google Cloud Storage', 'Grafana Cloud Logs', 'HTTPS',
-  'Google Cloud Pub/Sub', 'Heroku Logplex', 'Honeycomb', 'LogDNA (via Syslog)', 'Loggly',
-  'Logshuttle', 'Microsoft Azure Blob Storage', 'New Relic Logs', 'New Relic OTLP',
-  'Openstack', 'Papertrail', 'Rackspace Cloud Files', 'Scalyr', 'SFTP',
-  'Spaces by DigitalOcean', 'Splunk', 'Sumologic', 'Syslog',
-];
-
 function LoggingPage() {
   return (
     <div className={styles.configPageWrap}>
       <div className={styles.configPageHeader}>
-        <h2 className={styles.configPageTitle}>Choose your logging endpoint</h2>
+        <h2 className={styles.configPageTitle}>Logging</h2>
         <p className={styles.configPageDesc}>For more information, read our <button className={styles.inlineLink}>logging documentation</button>.</p>
       </div>
-      <div className={styles.endpointList}>
-        {loggingEndpoints.map((ep) => (
-          <div key={ep} className={styles.endpointRow}>
-            <span className={styles.endpointName}>{ep}</span>
-            <div className={styles.endpointActions}>
-              <button className={styles.inlineLink}>Documentation</button>
-              <button className={styles.addDomainBtn}><Icon name="add" size={20} /> Create endpoint</button>
-            </div>
-          </div>
-        ))}
+      <div className={styles.vclEmptyState}>
+        <Icon name="compatibility-2-illustration" size={80} />
+        <h3 className={styles.vclEmptyTitle}>No logging endpoints yet</h3>
+        <p className={styles.configCardDesc} style={{ textAlign: 'center' }}>After you create a logging endpoint they will appear here</p>
+        <div className={styles.vclEmptyActions}>
+          <button className={styles.editBtn}>Add endpoint <Icon name="chevron-down" size={20} style={{ color: 'white' }} /></button>
+          <button className={styles.addDomainBtn}>Documentation <Icon name="export" size={20} /></button>
+        </div>
       </div>
     </div>
   );
@@ -938,31 +1167,64 @@ function LoggingPage() {
 function VclPage() {
   const [activeTab, setActiveTab] = useState<'snippets' | 'custom' | 'complete'>('snippets');
 
-  const vclCode = `# Noticing changes to your VCL? The event log
-# (https://docs.fastly.com/en/guides/reviewing-service-activity-with-the-event-log)
-# in the web interface shows changes to your service's configurations and the
-# change log on developer.fastly.com (https://developer.fastly.com/reference/changes/vcl/)
-# provides info on changes to the Fastly-provided VCL itself.
-pragma optional_param geoip_opt_in true;
-pragma optional_param max_object_size 52428800;
-pragma optional_param smiss_max_object_size 52428800;
-pragma optional_param fetchless_purge_all 1;
-pragma optional_param chash_randomize_on_pass true;
-pragma optional_param default_ssl_check_cert 1;
-pragma optional_param max_backends 20;
-pragma optional_param customer_id "6MIv9yBm7CPkS96GbCByMB";
-C!
-W!
-# Backends
-backend F_Host_1 {
-    .between_bytes_timeout = 10s;
-    .connect_timeout = 1s;
-    .first_byte_timeout = 15s;
-    .host = "192.178.12.12";
-    .max_connections = 200;
-    .port = "80";
-    .share_key = "ngrfSqoDLkLxShlCB25wP5";
-}`;
+  const vclLines = [
+    { text: '# Noticing changes to your VCL? The event log', color: 'green' },
+    { text: '# (https://docs.fastly.com/en/guides/reviewing-service-activity-with-the-event-log)', color: 'green' },
+    { text: "# in the web interface shows changes to your service's configurations and the", color: 'green' },
+    { text: '# change log on developer.fastly.com (https://developer.fastly.com/reference/changes/vcl/)', color: 'green' },
+    { text: '# provides info on changes to the Fastly-provided VCL itself.', color: 'green' },
+    { text: 'pragma optional_param geoip_opt_in true;' },
+    { text: 'pragma optional_param max_object_size 52428800;' },
+    { text: 'pragma optional_param smiss_max_object_size 52428800;' },
+    { text: 'pragma optional_param fetchless_purge_all 1;' },
+    { text: 'pragma optional_param chash_randomize_on_pass true;' },
+    { text: 'pragma optional_param default_ssl_check_cert 1;' },
+    { text: 'pragma optional_param max_backends 20;' },
+    { text: 'pragma optional_param customer_id "6MIv9yBm7CPkS96GbCByMB";' },
+    { text: 'C!' },
+    { text: 'W!' },
+    { text: '# Backends', color: 'green' },
+    { text: 'backend F_Host_1 {' },
+    { text: '    .between_bytes_timeout = 10s;' },
+    { text: '    .connect_timeout = 1s;' },
+    { text: '    .first_byte_timeout = 15s;' },
+    { text: '    .host = "192.178.12.12";' },
+    { text: '    .max_connections = 200;' },
+    { text: '    .port = "80";' },
+    { text: '    .share_key = "ngrfSqoDLkLxShlCB25wP5";' },
+    { text: '}' },
+    { text: 'backend F_Host_2 {', highlight: 'error' },
+    { text: '    .between_bytes_timeout = 10s;' },
+    { text: '    .connect_timeout = 1s;' },
+    { text: '    .first_byte_timeout = 15s;' },
+    { text: '    .host = "0.0.0.0";' },
+    { text: '    .max_connections = 200;' },
+    { text: '    .port = "80";' },
+    { text: '    .share_key = "ngrfSqoDLkLxShlCB25wP5";' },
+    { text: '}' },
+    { text: '' },
+    { text: 'function handler(event) {', highlight: 'info' },
+    { text: '  let clientGeo = event.client.geo', highlight: 'info' },
+    { text: '', highlight: 'info' },
+    { text: '  event.request.headers.set("client-geo-continent", clientGeo.continent)', highlight: 'info' },
+    { text: '  event.request.headers.set("client-geo-country", clientGeo.country_code)', highlight: 'info' },
+    { text: '  event.request.headers.set("client-geo-latitude", clientGeo.latitude)', highlight: 'info' },
+    { text: '  event.request.headers.set("client-geo-longitude", clientGeo.longitude)', highlight: 'info' },
+    { text: '', highlight: 'info' },
+    { text: '  return fetch(event.request, { backend: "origin_0" })', highlight: 'info' },
+    { text: '}', highlight: 'info' },
+    { text: '' },
+    { text: '# Backends', color: 'green' },
+    { text: 'backend F_Host_1 {' },
+    { text: '    .between_bytes_timeout = 10s;' },
+    { text: '    .connect_timeout = 1s;' },
+    { text: '    .first_byte_timeout = 15s;' },
+    { text: '    .host = "192.178.12.12";' },
+    { text: '    .max_connections = 200;' },
+    { text: '    .port = "80";' },
+    { text: '    .share_key = "ngrfSqoDLkLxShlCB25wP5";' },
+    { text: '}' },
+  ] as const;
 
   return (
     <div className={styles.configPageWrap}>
@@ -971,10 +1233,10 @@ backend F_Host_1 {
         <div className={styles.vclSubheader}>
           <span className={styles.configCardDesc}>313 lines</span>
           <span className={styles.vclSep} />
-          <span className={styles.vclErrorDot} />
+          <Icon name="attention-filled" size={20} />
           <span className={styles.configCardDesc}>1 error</span>
           <span className={styles.vclSep} />
-          <span className={styles.vclWarningDot} />
+          <Icon name="attention-filled" size={20} />
           <span className={styles.configCardDesc}>1 warning</span>
         </div>
       </div>
@@ -991,16 +1253,29 @@ backend F_Host_1 {
               </button>
             ))}
           </div>
-          <button className={styles.expandAllLink}>
-            <Icon name="export" size={20} /> Fullscreen
+          <button className={styles.vclFullscreenBtn}>
+            <Icon name="fullscreen" size={20} /> Fullscreen
           </button>
         </div>
-        <div data-section={`vcl-${activeTab}`} className={styles.vclContent}>
+        <div data-section={`vcl-${activeTab}`} className={activeTab === 'complete' ? styles.vclContentComplete : styles.vclContent}>
           {activeTab === 'complete' ? (
-            <pre className={styles.vclCodeBlock}><code>{vclCode}</code></pre>
+            <div className={styles.vclCodeEditor}>
+              <div className={styles.vclLineNumbers}>
+                {vclLines.map((_, i) => (
+                  <span key={i} className={`${styles.vclLineNum} ${vclLines[i].highlight === 'error' ? styles.vclLineNumError : ''}`}>{i + 1}</span>
+                ))}
+              </div>
+              <div className={styles.vclCodeLines}>
+                {vclLines.map((line, i) => (
+                  <div key={i} className={`${styles.vclCodeLine} ${line.highlight === 'error' ? styles.vclLineError : ''} ${line.highlight === 'info' ? styles.vclLineInfo : ''}`}>
+                    <span style={line.color === 'green' ? { color: 'green' } : undefined}>{line.text || '\u200B'}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           ) : (
             <div className={styles.vclEmptyState}>
-              <Icon name="dev-tools" size={80} />
+              <Icon name="devops-illustration" size={80} />
               <h3 className={styles.vclEmptyTitle}>
                 {activeTab === 'snippets' ? 'No VCL snippets added' : 'No Custom VCL added'}
               </h3>
@@ -1017,6 +1292,33 @@ backend F_Host_1 {
             </div>
           )}
         </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Image Optimizer page ─── */
+function ImageOptimizerPage() {
+  return (
+    <div className={styles.configPageWrap}>
+      <div className={`${styles.card} ${styles.configCard}`}>
+        <div className={styles.settingsCardHeader}>
+          <div className={styles.configCardTitleRow}>
+            <h3 className={styles.settingsCardTitle}>Image Optimizer</h3>
+            <span className={styles.versionedPill}>Immediate update</span>
+            <Icon name="help" size={20} style={{ color: 'var(--text-secondary)' }} />
+          </div>
+          <p className={styles.settingsCardDesc}>Fastly's Image Optimizer allows you to transform and serve images at the edge, closer to your users. Offline image pre-processing tasks can take significant time. We perform the transformation tasks for you programmatically in real-time, allowing you to speed up delivery. <button className={styles.inlineLink}>Image Optimizer guide.</button></p>
+        </div>
+        <div className={styles.ioDropdownSection}>
+          <label className={styles.ioDropdownLabel}>Fallback location</label>
+          <button className={styles.ioDropdownSelect}>
+            <span className={styles.ioDropdownPlaceholder}>Select location</span>
+            <Icon name="caret-down" size={20} style={{ color: 'var(--text-secondary)' }} />
+          </button>
+          <p className={styles.ioDropdownHint}>Choose the geographic region closest to the origin where your images are stored. For origins without shielding configured, this region determines the fallback shield region for Image Optimizer requests.</p>
+        </div>
+        <button className={styles.addDomainBtn}>Enable Image Optimizer</button>
       </div>
     </div>
   );
@@ -1074,9 +1376,13 @@ function DictionariesPage() {
         <h2 className={styles.configPageTitle}>Dictionaries</h2>
         <p className={styles.configPageDesc}>A list of key-value pairs that can be referenced and used by your custom edge logic (such as VCL snippets or custom VCL). Our guide to <button className={styles.inlineLink}>working with dictionaries</button>.</p>
       </div>
-      <div className={`${styles.card} ${styles.configCard}`}>
-        <p className={styles.configEmptyText} style={{ fontStyle: 'italic' }}>There are no dictionaries.</p>
-        <button className={styles.addDomainBtn}><Icon name="add" size={20} /> Create your first dictionary</button>
+      <div className={styles.vclEmptyState}>
+        <Icon name="devops-illustration" size={80} />
+        <h3 className={styles.vclEmptyTitle}>No dictionaries added</h3>
+        <p className={styles.configCardDesc} style={{ textAlign: 'center' }}>A list of key-value pairs that can be referenced and used by your custom edge logic.</p>
+        <div className={styles.vclEmptyActions}>
+          <button className={styles.addDomainBtn}><Icon name="add" size={20} /> Create your first dictionary</button>
+        </div>
       </div>
     </div>
   );
@@ -1090,9 +1396,13 @@ function AclPage() {
         <h2 className={styles.configPageTitle}>Access control lists</h2>
         <p className={styles.configPageDesc}>Filter traffic by specifying which IP addresses should be allowed or blocked. You must use a condition to reference a list and specify a response.</p>
       </div>
-      <div className={`${styles.card} ${styles.configCard}`}>
-        <p className={styles.configEmptyText} style={{ fontStyle: 'italic' }}>There are no ACLs.</p>
-        <button className={styles.addDomainBtn}><Icon name="add" size={20} /> Create your first ACL</button>
+      <div className={styles.vclEmptyState}>
+        <Icon name="devops-illustration" size={80} />
+        <h3 className={styles.vclEmptyTitle}>No ACLs added</h3>
+        <p className={styles.configCardDesc} style={{ textAlign: 'center' }}>Filter traffic by specifying which IP addresses should be allowed or blocked.</p>
+        <div className={styles.vclEmptyActions}>
+          <button className={styles.addDomainBtn}><Icon name="add" size={20} /> Create your first ACL</button>
+        </div>
       </div>
     </div>
   );

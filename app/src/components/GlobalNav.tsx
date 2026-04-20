@@ -25,6 +25,7 @@ interface GlobalNavProps {
   onToggleSection: (sectionId: string) => void;
   pinnedItemIds: string[];
   onTogglePin: (itemId: string) => void;
+  onReorderPins: (newOrder: string[]) => void;
 }
 
 export function GlobalNav({
@@ -37,6 +38,7 @@ export function GlobalNav({
   expandedSections,
   onToggleSection,
   pinnedItemIds,
+  onReorderPins,
   onTogglePin,
 }: GlobalNavProps) {
   const [mobileL2Target, setMobileL2Target] = useState<string | null>(null);
@@ -99,12 +101,53 @@ export function GlobalNav({
     setL2Expanded((prev) => ({ ...prev, [id]: !prev[id] }));
   }, []);
 
-  // Collect all pinned items (preserving pin order)
+  const [editingPins, setEditingPins] = useState(false);
+  const [dragIdx, setDragIdx] = useState<number | null>(null);
+  const [dropIdx, setDropIdx] = useState<number | null>(null);
+
   const pinnedSet = new Set(pinnedItemIds);
   const allSectionItems = navigationData.filter(isSection).flatMap((s) => s.items);
   const pinnedItems = pinnedItemIds
     .map((id) => allSectionItems.find((item) => item.id === id))
     .filter((item): item is NavItem => !!item);
+
+  const movePinUp = useCallback((id: string) => {
+    const idx = pinnedItemIds.indexOf(id);
+    if (idx <= 0) return;
+    const next = [...pinnedItemIds];
+    [next[idx - 1], next[idx]] = [next[idx], next[idx - 1]];
+    onReorderPins(next);
+  }, [pinnedItemIds, onReorderPins]);
+
+  const movePinDown = useCallback((id: string) => {
+    const idx = pinnedItemIds.indexOf(id);
+    if (idx < 0 || idx >= pinnedItemIds.length - 1) return;
+    const next = [...pinnedItemIds];
+    [next[idx], next[idx + 1]] = [next[idx + 1], next[idx]];
+    onReorderPins(next);
+  }, [pinnedItemIds, onReorderPins]);
+
+  const handleDragStart = useCallback((idx: number) => (e: React.DragEvent) => {
+    setDragIdx(idx);
+    e.dataTransfer.effectAllowed = 'move';
+  }, []);
+
+  const handleDragOver = useCallback((idx: number) => (e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    setDropIdx(idx);
+  }, []);
+
+  const handleDragEnd = useCallback(() => {
+    if (dragIdx !== null && dropIdx !== null && dragIdx !== dropIdx) {
+      const next = [...pinnedItemIds];
+      const [moved] = next.splice(dragIdx, 1);
+      next.splice(dropIdx > dragIdx ? dropIdx - 1 : dropIdx, 0, moved);
+      onReorderPins(next);
+    }
+    setDragIdx(null);
+    setDropIdx(null);
+  }, [dragIdx, dropIdx, pinnedItemIds, onReorderPins]);
 
   const l2Data = mobileL2Target ? l2NavMap[mobileL2Target] : null;
 
@@ -163,28 +206,72 @@ export function GlobalNav({
               {/* Pins section */}
               {pinnedItems.length > 0 && (
                 <div className={styles.section}>
-                  <button
-                    className={styles.sectionHeader}
-                    onClick={() => onToggleSection('pins-section')}
-                  >
+                  <div className={styles.sectionHeader} onClick={() => onToggleSection('pins-section')}>
                     <span className={styles.sectionLabel}>Pins</span>
                     <span className={`${styles.sectionChevron} ${expandedSections['pins-section'] !== false ? styles.sectionChevronOpen : ''}`}>
                       <Icon name="caret-up" size={20} />
                     </span>
-                  </button>
+                    {expandedSections['pins-section'] !== false && (
+                      <span
+                        className={`${styles.pinEditBtn} ${editingPins ? styles.pinEditBtnVisible : ''}`}
+                        onClick={(e) => { e.stopPropagation(); setEditingPins(!editingPins); }}
+                        role="button"
+                        aria-label={editingPins ? 'Save pin order' : 'Edit pins'}
+                      >
+                        <Icon name={editingPins ? 'check-circle-filled' : 'edit'} size={20} />
+                      </span>
+                    )}
+                  </div>
                   <div className={`${styles.sectionCollapsible} ${expandedSections['pins-section'] !== false ? styles.sectionCollapsibleOpen : ''}`}>
                     <div className={styles.sectionCollapsibleInner}>
-                      {pinnedItems.map((item) => (
-                        <NavMenuItem
-                          key={`pin-${item.id}`}
-                          item={item}
-                          isActive={activeItem === item.id}
-                          onClick={() => handleItemClick(item.id)}
-                          isPinned={true}
-                          canPin={true}
-                          onTogglePin={() => onTogglePin(item.id)}
-                          hasL2={!!l2NavMap[item.id]}
-                        />
+                      {pinnedItems.map((item, idx) => (
+                        editingPins ? (
+                          <div key={`pin-edit-${item.id}`}>
+                            {dropIdx === idx && dragIdx !== null && dragIdx !== idx && (
+                              <div className={styles.pinDropTarget} />
+                            )}
+                            <div
+                              className={`${styles.pinEditRow} ${dragIdx === idx ? styles.pinEditRowDragging : ''}`}
+                              draggable
+                              onDragStart={handleDragStart(idx)}
+                              onDragOver={handleDragOver(idx)}
+                              onDragEnd={handleDragEnd}
+                            >
+                              <span className={styles.pinDragHandle}>
+                                <Icon name="move" size={20} />
+                              </span>
+                              <span className={styles.pinEditLabel}>{item.label}</span>
+                              <span
+                                className={`${styles.pinReorderBtn} ${idx === 0 ? styles.pinReorderBtnDisabled : ''}`}
+                                onClick={() => movePinUp(item.id)}
+                                role="button"
+                              >
+                                <Icon name="arrow-up" size={20} />
+                              </span>
+                              <span
+                                className={`${styles.pinReorderBtn} ${idx === pinnedItems.length - 1 ? styles.pinReorderBtnDisabled : ''}`}
+                                onClick={() => movePinDown(item.id)}
+                                role="button"
+                              >
+                                <Icon name="arrow-down" size={20} />
+                              </span>
+                            </div>
+                            {dropIdx === idx + 1 && dragIdx !== null && idx === pinnedItems.length - 1 && (
+                              <div className={styles.pinDropTarget} />
+                            )}
+                          </div>
+                        ) : (
+                          <NavMenuItem
+                            key={`pin-${item.id}`}
+                            item={item}
+                            isActive={activeItem === item.id}
+                            onClick={() => handleItemClick(item.id)}
+                            isPinned={true}
+                            canPin={true}
+                            onTogglePin={() => onTogglePin(item.id)}
+                            hasL2={!!l2NavMap[item.id]}
+                          />
+                        )
                       ))}
                     </div>
                   </div>
@@ -322,12 +409,7 @@ function NavMenuItem({ item, isActive, onClick, isPinned, canPin, onTogglePin, h
         <span className={`${styles.menuItemLabel} ${isActive ? styles.menuItemLabelActive : ''}`}>
           {item.label}
         </span>
-        {hasL2 && (
-          <span className={styles.l2Arrow}>
-            <Icon name="chevron-right" size={20} />
-          </span>
-        )}
-        {canPin && !hasL2 && (
+        {canPin && (
           <span
             className={`${styles.pinButton} ${isPinned ? styles.pinButtonVisible : ''}`}
             onClick={(e) => {
@@ -338,6 +420,11 @@ function NavMenuItem({ item, isActive, onClick, isPinned, canPin, onTogglePin, h
             aria-label={isPinned ? 'Unpin' : 'Pin'}
           >
             <Icon name={isPinned ? 'pin-filled' : 'pin-outline'} size={20} />
+          </span>
+        )}
+        {hasL2 && (
+          <span className={styles.l2Arrow}>
+            <Icon name="chevron-right" size={20} />
           </span>
         )}
       </button>

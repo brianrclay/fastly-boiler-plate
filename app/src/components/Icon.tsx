@@ -93,6 +93,9 @@ const iconFileMap: Record<string, string> = {
   'chevron-right': '/icons/core/Chevron right.svg',
   'chevron-left': '/icons/core/Chevron left.svg',
   'arrow-left': '/icons/core/Arrow left.svg',
+  'arrow-up': '/icons/core/Arrow up.svg',
+  'arrow-down': '/icons/core/Arrow down.svg',
+  'move': '/icons/core/Move.svg',
   'help': '/icons/core/Help.svg',
   'bell': '/icons/navigation/Notifications.svg',
   'calendar': '/icons/core/Calendar.svg',
@@ -105,9 +108,20 @@ const iconFileMap: Record<string, string> = {
   'observability-colorful': '/icons/product-lines/Observability Colorful.svg',
   'platform': '/icons/product-lines/Platform.svg',
   'platform-colorful': '/icons/product-lines/Platform Colorful.svg',
+  // Additional core icons
+  'attention-filled': '/icons/core/Attention filled.svg',
+  'attention': '/icons/core/Attention.svg',
+  'show-vcl': '/icons/core/Show VCL.svg',
+  'fullscreen': '/icons/core/Full screen.svg',
+  'download': '/icons/core/Download.svg',
+  'diff': '/icons/core/Diff.svg',
+  'lock': '/icons/core/Blocking on.svg',
+  'check-circle-filled': '/icons/core/Check circle filled.svg',
   //Illustrations
   'image-optimizer-illustration': '/icons/illustrations/Image Optimization.svg',
   'ddos-protection-illustration': '/icons/illustrations/Shield attack.svg',
+  'devops-illustration': '/icons/illustrations/Devops.svg',
+  'compatibility-2-illustration': '/icons/illustrations/Compatibility 2.svg',
 };
 
 interface IconProps {
@@ -118,7 +132,7 @@ interface IconProps {
 }
 
 // Icons that should preserve their original fill colors (e.g., branded logos)
-const preserveColorIcons = new Set(['fastly-logo', 'security-colorful', 'notifications-empty', 'compute-colorful', 'network-services-colorful', 'image-optimizer-illustration', 'ddos-protection-illustration', 'platform-colorful', 'observability-colorful', 'cdn-colorful', 'next-gen-waf-colorful', 'ddos-protection-colorful', 'ddos-observer-colorful', 'bot-management-colorful']);
+const preserveColorIcons = new Set(['fastly-logo', 'security-colorful', 'notifications-empty', 'compute-colorful', 'network-services-colorful', 'image-optimizer-illustration', 'ddos-protection-illustration', 'platform-colorful', 'observability-colorful', 'cdn-colorful', 'next-gen-waf-colorful', 'ddos-protection-colorful', 'ddos-observer-colorful', 'bot-management-colorful', 'attention-filled', 'attention', 'devops-illustration', 'compatibility-2-illustration']);
 
 export function Icon({ name, size = 20, className, style }: IconProps) {
   const [svgContent, setSvgContent] = useState<string | null>(null);

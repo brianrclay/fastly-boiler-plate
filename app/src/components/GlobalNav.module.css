@@ -295,6 +295,101 @@
   }
 }
 
+/* Pin edit button on section header */
+.pinEditBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  margin-left: auto;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.pinEditBtnVisible {
+  opacity: 1;
+}
+
+@media (hover: hover) {
+  .sectionHeader:hover .pinEditBtn {
+    opacity: 1;
+  }
+}
+
+/* Pin edit row */
+.pinEditRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-5);
+  padding: 12px var(--spacing-5);
+  margin: 0 var(--spacing-6);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  transition: background-color 150ms ease;
+}
+
+.pinEditRowDragging {
+  background-color: var(--surface-selected);
+  box-shadow: 0px 2px 8px rgba(11, 13, 14, 0.15);
+  border-radius: var(--radius-md);
+  z-index: 1;
+}
+
+.pinDragHandle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  color: var(--text-secondary);
+  cursor: grab;
+  flex-shrink: 0;
+}
+
+.pinDragHandle:active {
+  cursor: grabbing;
+}
+
+.pinEditLabel {
+  flex: 1;
+  font-family: var(--font-family-inter);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  letter-spacing: 0.07px;
+  color: var(--text-primary);
+}
+
+.pinReorderBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  color: var(--text-primary);
+  cursor: pointer;
+  border-radius: var(--radius-md);
+}
+
+.pinReorderBtn:hover {
+  background-color: var(--surface-hover);
+}
+
+.pinReorderBtnDisabled {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.pinDropTarget {
+  height: 2px;
+  background-color: var(--text-action);
+  margin: 0 var(--spacing-6);
+  border-radius: 1px;
+}
+
 /* === Mobile L2 panel === */
 .l2MenuContent {
   padding-top: 0;

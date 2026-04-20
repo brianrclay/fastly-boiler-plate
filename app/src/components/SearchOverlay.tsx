@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { Icon } from './Icon';
+import { services } from '../data/services';
 import styles from './SearchOverlay.module.css';
 
 interface PageEntry {
@@ -7,6 +8,12 @@ interface PageEntry {
   label: string;
   icon: string;
   category?: string;
+}
+
+interface ServiceEntry {
+  id: string;
+  name: string;
+  serviceType: 'CDN' | 'Compute';
 }
 
 const allPages: PageEntry[] = [
@@ -71,12 +78,21 @@ export function SearchOverlay({ isOpen, onClose, onNavigate }: SearchOverlayProp
   const [query, setQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const results = query.trim()
+  const pageResults = query.trim()
     ? allPages.filter((p) => {
         const q = query.toLowerCase();
         return p.label.toLowerCase().includes(q) || (p.category?.toLowerCase().includes(q) ?? false);
       })
     : [];
+
+  const serviceResults: ServiceEntry[] = query.trim()
+    ? services.filter((s) => {
+        const q = query.toLowerCase();
+        return s.name.toLowerCase().includes(q) || s.id.toLowerCase().includes(q) || s.serviceType.toLowerCase().includes(q);
+      }).map((s) => ({ id: s.name, name: s.name, serviceType: s.serviceType }))
+    : [];
+
+  const results = pageResults;
 
   useEffect(() => {
     if (isOpen) {
@@ -95,6 +111,8 @@ export function SearchOverlay({ isOpen, onClose, onNavigate }: SearchOverlayProp
     onClose();
   }, [onNavigate, onClose]);
 
+  const totalResults = serviceResults.length + pageResults.length;
+
   useEffect(() => {
     if (!isOpen) return;
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -102,18 +120,22 @@ export function SearchOverlay({ isOpen, onClose, onNavigate }: SearchOverlayProp
         onClose();
       } else if (e.key === 'ArrowDown') {
         e.preventDefault();
-        setSelectedIndex((prev) => Math.min(prev + 1, results.length - 1));
+        setSelectedIndex((prev) => Math.min(prev + 1, totalResults - 1));
       } else if (e.key === 'ArrowUp') {
         e.preventDefault();
         setSelectedIndex((prev) => Math.max(prev - 1, 0));
-      } else if (e.key === 'Enter' && results.length > 0) {
+      } else if (e.key === 'Enter' && totalResults > 0) {
         e.preventDefault();
-        handleSelect(results[selectedIndex].id);
+        if (selectedIndex < pageResults.length) {
+          handleSelect(pageResults[selectedIndex].id);
+        } else {
+          handleSelect(`service:${serviceResults[selectedIndex - pageResults.length].name}`);
+        }
       }
     };
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose, results, selectedIndex, handleSelect]);
+  }, [isOpen, onClose, serviceResults, pageResults, totalResults, selectedIndex, handleSelect]);
 
   if (!isOpen) return null;
 
@@ -143,34 +165,60 @@ export function SearchOverlay({ isOpen, onClose, onNavigate }: SearchOverlayProp
 
         <div className={styles.scrollable}>
           {showResults ? (
-            results.length > 0 ? (
-              <div className={styles.section}>
-                <h3 className={styles.sectionTitle}>Pages</h3>
-                <div className={styles.resultList}>
-                  {results.map((page, i) => (
-                    <button
-                      key={page.id}
-                      className={`${styles.resultItem} ${i === selectedIndex ? styles.resultItemSelected : ''}`}
-                      onClick={() => handleSelect(page.id)}
-                      onMouseEnter={() => setSelectedIndex(i)}
-                    >
-                      <Icon name={page.icon} size={20} />
-                      <span className={styles.resultLabel}>{page.label}</span>
-                      {page.category && (
-                        <span className={styles.resultCategory}>{page.category}</span>
-                      )}
-                    </button>
-                  ))}
-                </div>
-              </div>
+            (pageResults.length > 0 || serviceResults.length > 0) ? (
+              <>
+                {pageResults.length > 0 && (
+                  <div className={styles.section}>
+                    <h3 className={styles.sectionTitle}>Pages</h3>
+                    <div className={styles.resultList}>
+                      {pageResults.map((page, i) => (
+                        <button
+                          key={page.id}
+                          className={`${styles.resultItem} ${i === selectedIndex ? styles.resultItemSelected : ''}`}
+                          onClick={() => handleSelect(page.id)}
+                          onMouseEnter={() => setSelectedIndex(i)}
+                        >
+                          <Icon name={page.icon} size={20} />
+                          <span className={styles.resultLabel}>{page.label}</span>
+                          {page.category && (
+                            <span className={styles.resultCategory}>{page.category}</span>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {serviceResults.length > 0 && (
+                  <div className={styles.section}>
+                    <h3 className={styles.sectionTitle}>Services</h3>
+                    <div className={styles.resultList}>
+                      {serviceResults.map((svc, i) => {
+                        const globalIndex = pageResults.length + i;
+                        return (
+                          <button
+                            key={`svc-${svc.id}`}
+                            className={`${styles.resultItem} ${globalIndex === selectedIndex ? styles.resultItemSelected : ''}`}
+                            onClick={() => handleSelect(`service:${svc.name}`)}
+                            onMouseEnter={() => setSelectedIndex(globalIndex)}
+                          >
+                            <Icon name={svc.serviceType === 'Compute' ? 'compute' : 'cdn'} size={20} />
+                            <span className={styles.resultLabel}>{svc.name}</span>
+                            <span className={styles.resultCategory}>{svc.serviceType}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </>
             ) : (
               <div className={styles.section}>
-                <p className={styles.noResults}>No pages found for "{query}"</p>
+                <p className={styles.noResults}>No results found for "{query}"</p>
               </div>
             )
           ) : (
             <div className={styles.section}>
-              <h3 className={styles.sectionTitle}>Type to search pages...</h3>
+              <h3 className={styles.sectionTitle}>Type to search pages and services...</h3>
             </div>
           )}
         </div>

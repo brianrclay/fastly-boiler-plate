@@ -95,8 +95,12 @@ export default function App() {
     'tools-section': true,
     'account-section': true,
   });
-  const [pinnedItemIds, setPinnedItemIds] = useState<string[]>([]);
+  const [pinnedItemIds, setPinnedItemIds] = useState<string[]>(() => {
+    try { return JSON.parse(localStorage.getItem('pinnedNavItems') || '[]'); } catch { return []; }
+  });
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+
+  useEffect(() => { localStorage.setItem('pinnedNavItems', JSON.stringify(pinnedItemIds)); }, [pinnedItemIds]);
 
   // Apply data-theme to the root element
   useEffect(() => {
@@ -148,6 +152,28 @@ export default function App() {
   }, []);
 
   const handleItemClick = useCallback((id: string) => {
+    if (id.startsWith('service:')) {
+      const serviceName = id.slice(8);
+      setActiveItem('service-summary');
+      setActiveSubItem(serviceName);
+      setNavOpen(false);
+
+      const newPath = `/service-summary/${encodeURIComponent(serviceName)}`;
+      if (window.location.pathname !== newPath) {
+        window.history.pushState(null, '', newPath);
+      }
+
+      if ('service-summary' === displayedItem) return;
+
+      if (transitionTimer.current) clearTimeout(transitionTimer.current);
+      setPageVisible(false);
+      transitionTimer.current = setTimeout(() => {
+        setDisplayedItem('service-summary');
+        requestAnimationFrame(() => setPageVisible(true));
+        transitionTimer.current = null;
+      }, PAGE_FADE_MS);
+      return;
+    }
     setActiveItem(id);
     setActiveSubItem(undefined);
 
@@ -291,6 +317,7 @@ export default function App() {
           onToggleSection={handleToggleSection}
           pinnedItemIds={pinnedItemIds}
           onTogglePin={handleTogglePin}
+          onReorderPins={setPinnedItemIds}
         />
         <NotificationsDrawer
           isOpen={notificationsOpen}

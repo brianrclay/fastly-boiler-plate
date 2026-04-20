@@ -195,7 +195,7 @@
   /* --- Typography --- */
   --TYPOGRAPHY--font-family--inter: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
   --TYPOGRAPHY--font-family--sfmono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
-  --TYPOGRAPHY--font-family--monospace: 'IBMPlexMono', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+  --TYPOGRAPHY--font-family--monospace: 'IBM Plex Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
   --TYPOGRAPHY--font-weight--regular: 400;
   --TYPOGRAPHY--font-weight--semi-bold: 600;
   --TYPOGRAPHY--font-weight--bold: 700;
