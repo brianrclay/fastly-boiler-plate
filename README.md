@@ -29,21 +29,34 @@ You need these installed on your computer:
 | **Node.js 20+** | `node --version` | [nodejs.org](https://nodejs.org) (LTS version) |
 | **npm** | `npm --version` | Comes with Node.js |
 
-### 2. Clone the repo
+### 2. Create a folder for your projects
+
+Pick a place on your computer to keep your prototype work. Open **Terminal** (Mac) or **Command Prompt** (Windows) and run:
+
+```bash
+mkdir ~/prototypes
+cd ~/prototypes
+```
+
+> This creates a `prototypes` folder in your home directory. You only need to do this once. You can name it whatever you like or put it wherever you prefer (e.g., your Desktop).
+
+### 3. Clone the repo
+
+From inside your `prototypes` folder, run:
 
 ```bash
 git clone https://github.com/fastly/product-prototypes.git
-cd fastly-prototype-kit
+cd product-prototypes
 ```
 
-### 3. Install dependencies
+### 4. Install dependencies
 
 ```bash
 cd app
 npm install
 ```
 
-### 4. Start the dev server
+### 5. Start the dev server
 
 ```bash
 npm run dev
@@ -51,7 +64,7 @@ npm run dev
 
 Open the URL shown in your terminal (usually http://localhost:5173). You should see the Fastly control panel.
 
-### 5. Create your branch
+### 6. Create your branch
 
 ```bash
 git checkout -b my-prototype-name
