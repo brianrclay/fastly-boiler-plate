@@ -390,6 +390,10 @@
   border-radius: 1px;
 }
 
+.pinDropZoneBottom {
+  height: 24px;
+}
+
 /* === Mobile L2 panel === */
 .l2MenuContent {
   padding-top: 0;

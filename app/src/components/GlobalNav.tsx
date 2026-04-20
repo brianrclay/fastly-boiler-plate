@@ -135,7 +135,9 @@ export function GlobalNav({
   const handleDragOver = useCallback((idx: number) => (e: React.DragEvent) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
-    setDropIdx(idx);
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    const midY = rect.top + rect.height / 2;
+    setDropIdx(e.clientY > midY ? idx + 1 : idx);
   }, []);
 
   const handleDragEnd = useCallback(() => {
@@ -227,7 +229,7 @@ export function GlobalNav({
                       {pinnedItems.map((item, idx) => (
                         editingPins ? (
                           <div key={`pin-edit-${item.id}`}>
-                            {dropIdx === idx && dragIdx !== null && dragIdx !== idx && (
+                            {dropIdx === idx && dragIdx !== null && dragIdx !== idx && dragIdx !== idx - 1 && (
                               <div className={styles.pinDropTarget} />
                             )}
                             <div
@@ -256,7 +258,7 @@ export function GlobalNav({
                                 <Icon name="arrow-down" size={20} />
                               </span>
                             </div>
-                            {dropIdx === idx + 1 && dragIdx !== null && idx === pinnedItems.length - 1 && (
+                            {dropIdx === pinnedItems.length && dragIdx !== null && dragIdx !== pinnedItems.length - 1 && idx === pinnedItems.length - 1 && (
                               <div className={styles.pinDropTarget} />
                             )}
                           </div>
@@ -273,6 +275,12 @@ export function GlobalNav({
                           />
                         )
                       ))}
+                      {editingPins && pinnedItems.length > 0 && (
+                        <div
+                          className={styles.pinDropZoneBottom}
+                          onDragOver={handleDragOver(pinnedItems.length)}
+                        />
+                      )}
                     </div>
                   </div>
                 </div>
