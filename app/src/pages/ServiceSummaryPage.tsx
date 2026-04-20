@@ -106,12 +106,14 @@ export function ServiceSummaryPage({ serviceName, pageVisible = true, onNavigate
               <span className={styles.breadcrumbCurrent}>{serviceName}</span>
             </div>
             <div className={styles.titleRow}>
-              <h1 className={styles.title}>{serviceName}</h1>
-              <ServiceSwitcher
-                currentServiceName={serviceName}
-                serviceType={isCompute ? 'Compute' : 'CDN'}
-                onSelect={(name) => onNavigate?.(`service:${name}`)}
-              />
+              <div className={styles.titleWrap}>
+                <h1 className={styles.title}>{serviceName}</h1>
+                <ServiceSwitcher
+                  currentServiceName={serviceName}
+                  serviceType={isCompute ? 'Compute' : 'CDN'}
+                  onSelect={(name) => onNavigate?.(`service:${name}`)}
+                />
+              </div>
               <HeaderActions onNavigate={onNavigate} />
             </div>
             <div className={styles.serviceInfo}>
