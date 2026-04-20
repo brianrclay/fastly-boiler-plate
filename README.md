@@ -19,7 +19,16 @@ A ready-to-use prototype boilerplate for designers and product managers at Fastl
 
 You only need to do this once. After that, you'll use Claude Code for everything.
 
-### 1. Install Prerequisites
+### 1. Accounts
+
+Make sure you have accounts for these services:
+
+| Service | What it's for | Sign up |
+|---------|--------------|---------|
+| **GitHub** | Storing and sharing your prototype code | [github.com](https://github.com) |
+| **Netlify** | Publishing your prototype to a shareable URL | [netlify.com](https://netlify.com) (sign in with GitHub) |
+
+### 2. Install Prerequisites
 
 You need three things on your computer. Open **Terminal** (Mac) or **Command Prompt** (Windows) and check:
 
@@ -29,31 +38,31 @@ You need three things on your computer. Open **Terminal** (Mac) or **Command Pro
 | **Node.js 20+** | `node --version` | [nodejs.org](https://nodejs.org) (pick the LTS version) |
 | **Claude Code** | `claude --version` | [claude.ai/code](https://claude.ai/code) |
 
-### 2. Create a folder for your prototypes
+### 3. Create a folder for your prototypes
 
-For example, create a folder on your desktop called "Prototypes". Then open your terminal and use this command:
+Create a folder on your Desktop called `prototypes`. Then open Terminal and run:
 
 ```bash
-cd desktop/prototypes
+cd ~/Desktop/prototypes
 ```
 
-> You only do this once. You can name the folder whatever you want or put it wherever you like (Desktop, Documents, etc.).
+> This creates a `prototypes` folder on your Desktop. You only do this once.
 
-### 3. Clone the repo
+### 4. Clone the repo
 
 ```bash
 git clone https://github.com/fastly/product-prototypes.git
 cd product-prototypes
 ```
 
-### 4. Install dependencies
+### 5. Install dependencies
 
 ```bash
 cd app
 npm install
 ```
 
-### 5. Verify it works
+### 6. Verify it works
 
 ```bash
 npm run dev
@@ -67,23 +76,32 @@ You're done with setup.
 
 ## Building a Prototype
 
-### 1. Open the project in Claude Code
+### 1. Log in to AWS Bedrock
 
-From your `product-prototypes` folder, run:
+Open Terminal and run:
 
 ```bash
+aws sso login --profile=bedrock
+```
+
+This authenticates you with the AI service. You'll be redirected to a browser window to complete the login.
+
+### 2. Open the project in Claude Code
+
+```bash
+cd ~/Desktop/prototypes/product-prototypes
 claude
 ```
 
 This opens Claude Code with full knowledge of the project and design system.
 
-### 2. Tell Claude to create a branch
+### 3. Tell Claude to create a branch
 
 Say something like:
 
 > "Create a new branch called `my-prototype-name`"
 
-### 3. Describe what you want to build
+### 4. Describe what you want to build
 
 You can be as specific or as general as you want. Some examples:
 
@@ -97,7 +115,7 @@ You can be as specific or as general as you want. Some examples:
 
 Claude will write the code, follow the design system tokens, and use the existing component patterns automatically.
 
-### 4. Preview your changes
+### 5. Preview your changes
 
 Ask Claude:
 
@@ -110,7 +128,7 @@ cd app
 npm run dev
 ```
 
-### 5. Iterate
+### 6. Iterate
 
 Keep telling Claude what to change until it looks right. You can paste screenshots, Figma URLs, or just describe what you want in plain English.
 
@@ -122,9 +140,7 @@ When you're ready to share, ask Claude:
 
 > "Commit my changes and push the branch to GitHub"
 
-Then deploy it on Netlify or Vercel:
-
-### Netlify (Recommended)
+Then deploy it on Netlify:
 
 1. Go to [netlify.com](https://netlify.com) and sign in with GitHub
 2. Click **"Add new site"** > **"Import an existing project"**
@@ -137,13 +153,6 @@ Then deploy it on Netlify or Vercel:
 5. Click **Deploy**
 
 Your prototype will be live at a `.netlify.app` URL in about a minute. Share that link with anyone.
-
-### Vercel
-
-1. Go to [vercel.com](https://vercel.com) and sign in with GitHub
-2. Click **"Import Project"** and select the repo
-3. Set **Root directory** to `app` and **Branch** to your branch name
-4. Click **Deploy**
 
 ---
 
