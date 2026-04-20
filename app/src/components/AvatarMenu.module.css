@@ -64,7 +64,7 @@
 }
 
 .toggleOn {
-  background-color: var(--color-blue-50);
+  background-color: var(--COLOR--success--surface--strongest, #25741e);
 }
 
 .toggleTrack {
