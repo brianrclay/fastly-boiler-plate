@@ -2,6 +2,7 @@ import { useState, useCallback, useMemo } from 'react';
 import { Icon } from '../components/Icon';
 import { Footer } from '../components/Footer';
 import { services } from '../data/services';
+import { usePrototype } from '../context/PrototypeContext';
 import styles from './CdnPage.module.css';
 
 const filterChips = [
@@ -83,7 +84,8 @@ export function CdnPage({ pageVisible = true, onServiceClick }: { pageVisible?: 
     }
   }, [sortField]);
 
-  const cdnServices = useMemo(() => services.filter((s) => s.serviceType === 'CDN'), []);
+  const { isBrandNew } = usePrototype();
+  const cdnServices = useMemo(() => isBrandNew ? [] : services.filter((s) => s.serviceType === 'CDN'), [isBrandNew]);
 
   const sortedServices = useMemo(() => {
     const filtered = searchQuery

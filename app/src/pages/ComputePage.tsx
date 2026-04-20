@@ -2,6 +2,7 @@ import { useState, useCallback, useMemo } from 'react';
 import { Icon } from '../components/Icon';
 import { Footer } from '../components/Footer';
 import { services } from '../data/services';
+import { usePrototype } from '../context/PrototypeContext';
 import styles from './CdnPage.module.css';
 
 const filterChips = [
@@ -67,9 +68,11 @@ function pillClass(type: string): string {
   }
 }
 
-const computeServices = services.filter((s) => s.serviceType === 'Compute');
+const allComputeServices = services.filter((s) => s.serviceType === 'Compute');
 
 export function ComputePage({ pageVisible = true, onServiceClick }: { pageVisible?: boolean; onServiceClick?: (name: string) => void }) {
+  const { isBrandNew } = usePrototype();
+  const computeServices = isBrandNew ? [] : allComputeServices;
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState<'expanded' | 'condensed'>('expanded');

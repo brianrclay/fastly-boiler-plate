@@ -4,6 +4,7 @@ import { Footer } from '../components/Footer';
 import { Icon } from '../components/Icon';
 import { observabilityNavData } from '../data/observabilityNav';
 import { services } from '../data/services';
+import { usePrototype } from '../context/PrototypeContext';
 import styles from './ObservabilityPage.module.css';
 
 // Map L2 nav items to page titles
@@ -37,6 +38,7 @@ interface ObservabilityPageProps {
 
 export function ObservabilityPage({ pageVisible = true, activeSubItem, onSubItemChange }: ObservabilityPageProps) {
   const activeL2Item = activeSubItem || 'account-summary';
+  const { isBrandNew } = usePrototype();
 
   const handleItemClick = useCallback((id: string) => {
     onSubItemChange?.(id);
@@ -57,7 +59,16 @@ export function ObservabilityPage({ pageVisible = true, activeSubItem, onSubItem
           key={activeL2Item}
           className={`${styles.pageContent} ${pageVisible ? styles.pageContentAnimate : styles.pageContentHidden}`}
         >
-          {renderPage(activeL2Item)}
+          {isBrandNew ? (
+            <div className={styles.pageHeader}>
+              <h1 className={styles.title}>{pageTitles[activeL2Item] || 'Account summary'}</h1>
+              <div className={styles.emptyStateBanner}>
+                <Icon name="devops-illustration" size={80} />
+                <h3 className={styles.emptyStateTitle}>No data yet</h3>
+                <p className={styles.emptyStateDesc}>Create your first service to start seeing data here.</p>
+              </div>
+            </div>
+          ) : renderPage(activeL2Item)}
         </div>
         <Footer />
       </div>

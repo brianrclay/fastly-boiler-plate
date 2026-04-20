@@ -11,6 +11,8 @@ import { DnsManagementPage } from './pages/DnsManagementPage';
 import { CdnPage } from './pages/CdnPage';
 import { ComputePage } from './pages/ComputePage';
 import { ServiceSummaryPage } from './pages/ServiceSummaryPage';
+import { PrototypeProvider } from './context/PrototypeContext';
+import { PrototypeToolbar } from './components/PrototypeToolbar';
 import { theme } from './theme';
 import styles from './App.module.css';
 import { Retune } from 'retune';
@@ -299,9 +301,11 @@ export default function App() {
   };
 
   return (
+    <PrototypeProvider>
     <MantineProvider theme={theme}>
       <Retune />
       <div className={styles.layout}>
+        <PrototypeToolbar />
         <TopMenu onMenuClick={handleMenuClick} onBellClick={handleBellClick} onLogoClick={() => handleItemClick('home')} onNavigate={handleItemClick} isDark={isDark} onToggleDark={handleToggleDark} />
         <div className={styles.pageTransition}>
           {renderPage()}
@@ -326,5 +330,6 @@ export default function App() {
         />
       </div>
     </MantineProvider>
+    </PrototypeProvider>
   );
 }

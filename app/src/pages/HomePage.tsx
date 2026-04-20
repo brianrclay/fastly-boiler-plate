@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Icon } from '../components/Icon';
 import { services as allServicesData } from '../data/services';
+import { usePrototype } from '../context/PrototypeContext';
 import styles from './HomePage.module.css';
 
 /* ─── Static data ─── */
@@ -405,6 +406,7 @@ const sortOptions = [
 ];
 
 function ServicesCard({ onNavigate, onServiceClick }: { onNavigate?: (id: string) => void; onServiceClick?: (name: string) => void }) {
+  const { isBrandNew } = usePrototype();
   const [activeTab, setActiveTab] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('last-viewed');
@@ -417,7 +419,9 @@ function ServicesCard({ onNavigate, onServiceClick }: { onNavigate?: (id: string
     { id: 'compute', label: 'Compute', icon: 'compute-colorful' },
   ];
 
-  const filtered = servicesList.filter((s) => {
+  const activeServicesList = isBrandNew ? [] : servicesList;
+
+  const filtered = activeServicesList.filter((s) => {
     if (activeTab !== 'all' && s.type.toLowerCase() !== activeTab) return false;
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
