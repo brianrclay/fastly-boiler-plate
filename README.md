@@ -31,11 +31,10 @@ You need three things on your computer. Open **Terminal** (Mac) or **Command Pro
 
 ### 2. Create a folder for your prototypes
 
-Pick a spot on your computer. In Terminal, run:
+For example, create a folder on your desktop called "Prototypes". Then open your terminal and use this command:
 
 ```bash
-mkdir ~/prototypes
-cd ~/prototypes
+cd desktop/prototypes
 ```
 
 > You only do this once. You can name the folder whatever you want or put it wherever you like (Desktop, Documents, etc.).
