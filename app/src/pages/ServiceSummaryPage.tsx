@@ -107,6 +107,11 @@ export function ServiceSummaryPage({ serviceName, pageVisible = true, onNavigate
             </div>
             <div className={styles.titleRow}>
               <h1 className={styles.title}>{serviceName}</h1>
+              <ServiceSwitcher
+                currentServiceName={serviceName}
+                serviceType={isCompute ? 'Compute' : 'CDN'}
+                onSelect={(name) => onNavigate?.(`service:${name}`)}
+              />
               <HeaderActions onNavigate={onNavigate} />
             </div>
             <div className={styles.serviceInfo}>
@@ -319,6 +324,88 @@ export function ServiceSummaryPage({ serviceName, pageVisible = true, onNavigate
         <Footer />
       </main>
     </>
+  );
+}
+
+/* ─── Service switcher popover ─── */
+function ServiceSwitcher({ currentServiceName, serviceType, onSelect }: { currentServiceName: string; serviceType: 'CDN' | 'Compute'; onSelect: (name: string) => void }) {
+  const dd = useDropdown();
+  const [search, setSearch] = useState('');
+  const [activeTab, setActiveTab] = useState<'recent' | 'favorites' | 'activated'>('recent');
+
+  const sameTypeServices = allServices.filter((s) => s.serviceType === serviceType);
+  const filtered = search
+    ? sameTypeServices.filter((s) => s.name.toLowerCase().includes(search.toLowerCase()) || s.id.toLowerCase().includes(search.toLowerCase()))
+    : sameTypeServices;
+
+  return (
+    <div className={styles.ddWrapper} ref={dd.ref}>
+      <button className={styles.versionDropdownBtn} onClick={() => dd.setOpen(!dd.open)}>
+        <Icon name="chevron-down" size={16} />
+      </button>
+      {dd.open && (
+        <div className={styles.serviceSwitcher}>
+          <div className={styles.serviceSwitcherArrow} />
+          <div className={styles.serviceSwitcherSearch}>
+            <div className={styles.serviceSwitcherSearchInput}>
+              <Icon name="search" size={20} style={{ color: 'var(--text-secondary)' }} />
+              <input
+                type="text"
+                placeholder="Search by ID, name, or domain..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                autoFocus
+              />
+              {search && (
+                <button className={styles.serviceSwitcherClear} onClick={() => setSearch('')}>Clear</button>
+              )}
+            </div>
+          </div>
+          <div className={styles.serviceSwitcherTabs}>
+            {(['recent', 'favorites', 'activated'] as const).map((tab) => (
+              <button
+                key={tab}
+                className={activeTab === tab ? styles.serviceSwitcherTabActive : styles.serviceSwitcherTab}
+                onClick={() => setActiveTab(tab)}
+              >
+                {tab === 'recent' ? 'Recently visited' : tab === 'favorites' ? 'Favorites' : 'Last activated'}
+              </button>
+            ))}
+          </div>
+          <div className={styles.serviceSwitcherList}>
+            {filtered.map((svc) => (
+              <button
+                key={svc.id}
+                className={`${styles.serviceSwitcherRow} ${svc.name === currentServiceName ? styles.serviceSwitcherRowActive : ''}`}
+                onClick={() => { onSelect(svc.name); dd.setOpen(false); }}
+              >
+                <div className={styles.serviceSwitcherRowContent}>
+                  <Icon name={svc.serviceType === 'Compute' ? 'compute' : 'cdn'} size={20} />
+                  <div className={styles.serviceSwitcherRowText}>
+                    <span className={styles.serviceSwitcherRowName}>{svc.name}</span>
+                    <div className={styles.serviceSwitcherRowMeta}>
+                      <span className={styles.serviceSwitcherRowId}>{svc.id}</span>
+                      <span className={styles.serviceSwitcherRowSep} />
+                      <span className={styles.serviceSwitcherRowType}>{svc.serviceType}</span>
+                    </div>
+                  </div>
+                </div>
+                {svc.configs[0] && (
+                  <span className={`${styles.versionSwitcherPill} ${svc.configs[0].type === 'Production' ? styles.configPillProduction : svc.configs[0].type === 'Draft' ? styles.pillDraft : svc.configs[0].type === 'Staging' ? styles.configPillStaging : styles.pillLocked}`}>
+                    {svc.configs[0].version ? `v${svc.configs[0].version}` : svc.configs[0].type}
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+          <div className={styles.serviceSwitcherFooter}>
+            <span className={styles.serviceSwitcherFooterLabel}>Quick links</span>
+            <button className={styles.serviceSwitcherFooterLink}>Create a new service</button>
+            <button className={styles.serviceSwitcherFooterLink}>{serviceType} docs</button>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 

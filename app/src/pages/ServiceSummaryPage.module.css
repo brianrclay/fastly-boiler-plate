@@ -2733,6 +2733,220 @@
   text-overflow: ellipsis;
 }
 
+/* ─── Service switcher ─── */
+.serviceSwitcher {
+  position: absolute;
+  top: calc(100% + 12px);
+  left: -24px;
+  width: 620px;
+  background-color: var(--surface-overlay, white);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: 0px 4px 8px 0px rgba(11, 13, 14, 0.25);
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+}
+
+.serviceSwitcherArrow {
+  position: absolute;
+  top: -10px;
+  left: 30px;
+  width: 20px;
+  height: 20px;
+  background-color: var(--surface-overlay, white);
+  border-right: 1px solid var(--border-primary);
+  border-top: 1px solid var(--border-primary);
+  transform: rotate(-45deg);
+}
+
+.serviceSwitcherSearch {
+  padding: var(--spacing-6) var(--spacing-6) var(--spacing-5);
+}
+
+.serviceSwitcherSearchInput {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: var(--spacing-3) var(--spacing-5);
+  border: 1px solid var(--COLOR--border--inactive, #677483);
+  border-radius: var(--radius-md);
+}
+
+.serviceSwitcherSearchInput input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--font-family-inter);
+  font-size: 14px;
+  color: var(--text-primary);
+  min-width: 0;
+}
+
+.serviceSwitcherSearchInput input::placeholder {
+  color: var(--text-secondary);
+}
+
+.serviceSwitcherClear {
+  font-family: var(--font-family-inter);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--text-primary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.serviceSwitcherTabs {
+  display: flex;
+  gap: var(--spacing-5);
+  padding: var(--spacing-2) var(--spacing-6) 12px;
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.serviceSwitcherTab {
+  padding: var(--spacing-2) 12px;
+  border-radius: 100px;
+  background-color: var(--COLOR--surface--secondary, #f3f4f6);
+  font-family: var(--font-family-inter);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 20px;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.serviceSwitcherTab:hover {
+  background-color: var(--surface-hover);
+}
+
+.serviceSwitcherTabActive {
+  padding: var(--spacing-2) 12px;
+  border-radius: 100px;
+  background-color: var(--surface-selected);
+  font-family: var(--font-family-inter);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 20px;
+  color: var(--text-action);
+  white-space: nowrap;
+}
+
+.serviceSwitcherList {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 0;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.serviceSwitcherRow {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-5);
+  padding: 12px var(--spacing-6);
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+}
+
+.serviceSwitcherRow:hover {
+  background-color: var(--surface-hover);
+}
+
+.serviceSwitcherRowActive {
+  background-color: var(--surface-selected);
+}
+
+.serviceSwitcherRowContent {
+  display: flex;
+  gap: var(--spacing-5);
+  align-items: flex-start;
+  flex: 1;
+  min-width: 0;
+}
+
+.serviceSwitcherRowText {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  flex: 1;
+  min-width: 0;
+}
+
+.serviceSwitcherRowName {
+  font-family: var(--font-family-inter);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  color: var(--text-primary);
+}
+
+.serviceSwitcherRowMeta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.serviceSwitcherRowId {
+  font-family: var(--font-family-inter);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 20px;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.serviceSwitcherRowSep {
+  width: 1px;
+  height: 16px;
+  background-color: var(--border-primary);
+  flex-shrink: 0;
+}
+
+.serviceSwitcherRowType {
+  font-family: var(--font-family-inter);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 20px;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.serviceSwitcherFooter {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-5);
+  padding: var(--spacing-5) var(--spacing-6);
+  border-top: 1px solid var(--border-primary);
+}
+
+.serviceSwitcherFooterLabel {
+  font-family: var(--font-family-inter);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  color: var(--text-primary);
+}
+
+.serviceSwitcherFooterLink {
+  font-family: var(--font-family-inter);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 20px;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--text-primary);
+  cursor: pointer;
+}
+
+.serviceSwitcherFooterLink:hover {
+  color: var(--text-action);
+  border-bottom-color: var(--text-action);
+}
+
 /* ─── Mobile ─── */
 @media (max-width: 960px) {
   .page {
