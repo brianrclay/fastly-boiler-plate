@@ -11,6 +11,7 @@ import { DnsManagementPage } from './pages/DnsManagementPage';
 import { CdnPage } from './pages/CdnPage';
 import { ComputePage } from './pages/ComputePage';
 import { ServiceSummaryPage } from './pages/ServiceSummaryPage';
+import { CreateCdnServicePage } from './pages/CreateCdnServicePage';
 import { PrototypeProvider } from './context/PrototypeContext';
 import { PrototypeToolbar } from './components/PrototypeToolbar';
 import { theme } from './theme';
@@ -68,6 +69,7 @@ const VALID_PAGE_IDS = new Set([
   'dns-management',
   'service-summary',
   'compute',
+  'create-cdn-service',
 ]);
 
 function parseUrl(): { pageId: string; subId?: string } {
@@ -285,15 +287,17 @@ export default function App() {
       case 'dns-management':
         return <DnsManagementPage pageVisible={pageVisible} activeSubItem={activeSubItem} onSubItemChange={handleSubItemChange} />;
       case 'cdn':
-        return <CdnPage pageVisible={pageVisible} onServiceClick={handleServiceClick} />;
+        return <CdnPage pageVisible={pageVisible} onServiceClick={handleServiceClick} onCreateService={() => handleItemClick('create-cdn-service')} />;
       case 'compute':
         return <ComputePage pageVisible={pageVisible} onServiceClick={handleServiceClick} />;
       case 'service-summary':
         return <ServiceSummaryPage serviceName={activeSubItem || 'Service'} pageVisible={pageVisible} onNavigate={handleItemClick} />;
+      case 'create-cdn-service':
+        return <CreateCdnServicePage onCancel={() => handleItemClick('cdn')} onCreated={(name) => handleServiceClick(name)} />;
       default:
         return (
           <main className={styles.main}>
-            <HomePage title={pageTitles[displayedItem] || displayedItem} pageVisible={pageVisible} onNavigate={handleItemClick} onServiceClick={handleServiceClick} />
+            <HomePage title={pageTitles[displayedItem] || displayedItem} pageVisible={pageVisible} onNavigate={handleItemClick} onServiceClick={handleServiceClick} onCreateService={() => handleItemClick('create-cdn-service')} />
             <Footer />
           </main>
         );

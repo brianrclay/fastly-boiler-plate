@@ -68,7 +68,7 @@ function pillClass(type: string): string {
   }
 }
 
-export function CdnPage({ pageVisible = true, onServiceClick }: { pageVisible?: boolean; onServiceClick?: (name: string) => void }) {
+export function CdnPage({ pageVisible = true, onServiceClick, onCreateService }: { pageVisible?: boolean; onServiceClick?: (name: string) => void; onCreateService?: () => void }) {
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState<'expanded' | 'condensed'>('expanded');
@@ -159,7 +159,7 @@ export function CdnPage({ pageVisible = true, onServiceClick }: { pageVisible?: 
                 </div>
               </div>
               <div className={styles.actionsDivider}>
-                <button className={styles.createButton}>
+                <button className={styles.createButton} onClick={onCreateService}>
                   <Icon name="add" size={20} style={{ color: 'white' }} />
                   Create service
                 </button>

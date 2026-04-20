@@ -41,9 +41,12 @@ interface HomePageProps {
   pageVisible?: boolean;
   onNavigate?: (id: string) => void;
   onServiceClick?: (name: string) => void;
+  onCreateService?: () => void;
 }
 
-export function HomePage({ title = 'Home', pageVisible = true, onNavigate, onServiceClick }: HomePageProps) {
+export function HomePage({ title = 'Home', pageVisible = true, onNavigate, onServiceClick, onCreateService }: HomePageProps) {
+  const { isBrandNew } = usePrototype();
+
   if (title !== 'Home') {
     return <GenericPage title={title} pageVisible={pageVisible} />;
   }
@@ -51,21 +54,27 @@ export function HomePage({ title = 'Home', pageVisible = true, onNavigate, onSer
   return (
     <div className={styles.pageWrapper}>
       <div className={`${styles.pageContent} ${pageVisible ? styles.pageContentAnimate : styles.pageContentHidden}`}>
-        <PageHeader onNavigate={onNavigate} />
-        <div className={styles.columns}>
-          <div className={styles.colLeft}>
-            <AccountMetrics onNavigate={onNavigate} />
-            <DdosMetrics onNavigate={onNavigate} />
-            <WafMetrics onNavigate={onNavigate} />
-            <TlsCard onNavigate={onNavigate} />
-            <UsageSpendCard onNavigate={onNavigate} />
-          </div>
-          <div className={styles.colRight}>
-            <ServicesCard onNavigate={onNavigate} onServiceClick={onServiceClick} />
-            <WorkspacesCard onNavigate={onNavigate} />
-            <QuickCreate onNavigate={onNavigate} />
-          </div>
-        </div>
+        {isBrandNew ? (
+          <BrandNewHome onNavigate={onNavigate} onCreateService={onCreateService} />
+        ) : (
+          <>
+            <PageHeader onNavigate={onNavigate} onCreateService={onCreateService} />
+            <div className={styles.columns}>
+              <div className={styles.colLeft}>
+                <AccountMetrics onNavigate={onNavigate} />
+                <DdosMetrics onNavigate={onNavigate} />
+                <WafMetrics onNavigate={onNavigate} />
+                <TlsCard onNavigate={onNavigate} />
+                <UsageSpendCard onNavigate={onNavigate} />
+              </div>
+              <div className={styles.colRight}>
+                <ServicesCard onNavigate={onNavigate} onServiceClick={onServiceClick} />
+                <WorkspacesCard onNavigate={onNavigate} />
+                <QuickCreate onNavigate={onNavigate} onCreateService={onCreateService} />
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
@@ -112,7 +121,7 @@ function GenericPage({ title, pageVisible }: { title: string; pageVisible: boole
 }
 
 /* ─── Page header with Create dropdown ─── */
-function PageHeader({ onNavigate }: { onNavigate?: (id: string) => void }) {
+function PageHeader({ onNavigate, onCreateService }: { onNavigate?: (id: string) => void; onCreateService?: () => void }) {
   const { open, setOpen, ref } = useDropdown();
 
   const createItems = [
@@ -137,7 +146,7 @@ function PageHeader({ onNavigate }: { onNavigate?: (id: string) => void }) {
                 <button
                   key={item.label}
                   className={styles.dropdownItem}
-                  onClick={() => { setOpen(false); onNavigate?.(item.nav); }}
+                  onClick={() => { setOpen(false); item.nav === 'cdn' && onCreateService ? onCreateService() : onNavigate?.(item.nav); }}
                 >
                   <Icon name={item.icon} size={20} />
                   <span>{item.label}</span>
@@ -555,7 +564,7 @@ function WorkspacesCard({ onNavigate }: { onNavigate?: (id: string) => void }) {
 }
 
 /* ─── Quick create ─── */
-function QuickCreate({ onNavigate }: { onNavigate?: (id: string) => void }) {
+function QuickCreate({ onNavigate, onCreateService }: { onNavigate?: (id: string) => void; onCreateService?: () => void }) {
   const items = [
     { label: 'CDN service', nav: 'cdn' },
     { label: 'Next-Gen WAF Workspace', nav: 'next-gen-waf' },
@@ -567,7 +576,7 @@ function QuickCreate({ onNavigate }: { onNavigate?: (id: string) => void }) {
       <h3 className={styles.widgetTitle}>Quick create</h3>
       <div className={styles.quickCreateButtons}>
         {items.map((item) => (
-          <button key={item.label} className={styles.quickCreateBtn} onClick={() => onNavigate?.(item.nav)}>
+          <button key={item.label} className={styles.quickCreateBtn} onClick={() => item.nav === 'cdn' && onCreateService ? onCreateService() : onNavigate?.(item.nav)}>
             <Icon name="add" size={20} />
             {item.label}
           </button>
@@ -600,5 +609,193 @@ function Pagination({ total, perPage }: { total: number; perPage: number }) {
         </div>
       </div>
     </div>
+  );
+}
+
+/* ─── Brand New User Home ─── */
+function BrandNewHome({ onNavigate, onCreateService }: { onNavigate?: (id: string) => void; onCreateService?: () => void }) {
+  const metricRows = [
+    [{ label: 'Requests', value: '--' }, { label: 'Average hit ratio', value: '--' }],
+    [{ label: 'Errors', value: '--' }, { label: 'Average error ratio', value: '--' }],
+    [{ label: 'Bandwidth', value: '--' }, { label: 'Average error ratio', value: '--' }],
+  ];
+
+  return (
+    <>
+      <div className={styles.pageHeader}>
+        <div className={styles.pageHeaderRow}>
+          <h1 className={styles.title}>Acme Co.</h1>
+          <button className={styles.createBtn} onClick={onCreateService}>
+            Create service
+            <Icon name="chevron-down" size={20} style={{ color: 'white' }} />
+          </button>
+        </div>
+      </div>
+      <div className={styles.columns}>
+        <div className={styles.colLeft}>
+          {/* Get started */}
+          <div className={styles.getStartedCard}>
+            <h3 className={styles.widgetTitle}>Get started</h3>
+            <div className={styles.getStartedItems}>
+              <div className={styles.getStartedItem}>
+                <div className={styles.getStartedIcon}>
+                  <Icon name="cdn" size={20} />
+                </div>
+                <div className={styles.getStartedContent}>
+                  <h4 className={styles.getStartedItemTitle}>Create your first service</h4>
+                  <p className={styles.getStartedItemDesc}>Deploy your application on the worlds fastest CDN.</p>
+                  <button className={styles.createBtn} onClick={onCreateService}>Create CDN service</button>
+                </div>
+              </div>
+              <div className={styles.getStartedItem}>
+                <div className={styles.getStartedIcon}>
+                  <Icon name="user-management" size={20} />
+                </div>
+                <div className={styles.getStartedContent}>
+                  <h4 className={styles.getStartedItemTitle}>Invite your teammates</h4>
+                  <p className={styles.getStartedItemDesc}>Invite as many team members to your account as you'd like. All seats on Fastly <strong>are free</strong>.</p>
+                  <button className={styles.outlinedBtn} onClick={() => onNavigate?.('user-management')}>Send an invite</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Account metrics */}
+          <div className={styles.metricsCard}>
+            <div className={styles.metricsCardHeader}>
+              <h3 className={styles.widgetTitle}>Account metrics</h3>
+              <span className={styles.metricsSubtext}>Data from the last 30 days</span>
+            </div>
+            <div className={styles.metricsGrid}>
+              {metricRows.map((row, ri) => (
+                <div key={ri} className={styles.metricsGridRow}>
+                  {row.map((m, ci) => (
+                    <div key={ci} className={styles.metricsGridCell}>
+                      <span className={styles.metricsGridLabel}>{m.label}</span>
+                      <span className={styles.metricsGridValue}>{m.value}</span>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+            <div className={styles.metricsFooter}>
+              <button className={styles.actionLinkBtn} onClick={() => onNavigate?.('observability')}>View Observability dashboard</button>
+            </div>
+          </div>
+
+          {/* DDoS */}
+          <div className={styles.promoCard}>
+            <h3 className={styles.widgetTitle}>DDoS Protection metrics</h3>
+            <span className={styles.metricsSubtext}>Data from the last 30 days</span>
+            <div className={styles.promoBanner}>
+              <Icon name="help" size={24} style={{ color: 'var(--text-action)', flexShrink: 0 }} />
+              <div className={styles.promoBannerContent}>
+                <h4 className={styles.promoBannerTitle}>Get started with DDoS Protection</h4>
+                <p className={styles.promoBannerDesc}>Automatic DDoS protection that keeps any application and API available and performant.</p>
+              </div>
+              <button className={styles.outlinedBtn}>Enable</button>
+            </div>
+          </div>
+
+          {/* WAF */}
+          <div className={styles.promoCard}>
+            <h3 className={styles.widgetTitle}>Next-Gen WAF metrics</h3>
+            <span className={styles.metricsSubtext}>Data from the last 30 days</span>
+            <div className={styles.promoBanner}>
+              <Icon name="help" size={24} style={{ color: 'var(--text-action)', flexShrink: 0 }} />
+              <div className={styles.promoBannerContent}>
+                <h4 className={styles.promoBannerTitle}>Protect your applications and APIs</h4>
+                <p className={styles.promoBannerDesc}>Lorem ipsum nisi tristique accumsan condimentum urna tincidunt etiam at elit pretium amet turpis tellus.</p>
+              </div>
+              <button className={styles.outlinedBtn}>Enable</button>
+            </div>
+          </div>
+
+          {/* TLS */}
+          <div className={styles.promoCard}>
+            <h3 className={styles.widgetTitle}>TLS Certificate Status</h3>
+            <span className={styles.metricsSubtext}>Data from the last 30 days</span>
+            <div className={styles.promoBanner}>
+              <Icon name="help" size={24} style={{ color: 'var(--text-action)', flexShrink: 0 }} />
+              <div className={styles.promoBannerContent}>
+                <h4 className={styles.promoBannerTitle}>Add a TLS certificate</h4>
+                <p className={styles.promoBannerDesc}>Lorem ipsum nisi tristique accumsan condimentum urna tincidunt etiam at elit pretium amet turpis tellus.</p>
+              </div>
+              <button className={styles.outlinedBtn}>Enable</button>
+            </div>
+          </div>
+
+          {/* Plan usage */}
+          <div className={styles.promoCard}>
+            <h3 className={styles.widgetTitle}>Plan usage</h3>
+            <span className={styles.metricsSubtext}>Month-to-date</span>
+            <div className={styles.planUsageRows}>
+              <div className={styles.planUsageRow}>
+                <span className={styles.planUsageLabel}>Requests</span>
+                <span className={styles.planUsageValue}>-- <span className={styles.planUsageSep}>|</span> Billed units: --</span>
+              </div>
+              <div className={styles.planUsageRow}>
+                <span className={styles.planUsageLabel}>Bandwidth</span>
+                <span className={styles.planUsageValue}>--</span>
+              </div>
+              <div className={styles.planUsageRow}>
+                <span className={styles.planUsageLabel}>Compute duration</span>
+                <span className={styles.planUsageValue}>--</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className={styles.colRight}>
+          {/* Services empty */}
+          <div className={styles.servicesWidget}>
+            <div className={styles.widgetHeader}>
+              <h3 className={styles.widgetTitle}>Services</h3>
+              <div className={styles.widgetHeaderActions}>
+                <button className={styles.headerLinkBtn}>Compute</button>
+                <button className={styles.headerLinkBtn}>CDN</button>
+              </div>
+            </div>
+            <div className={styles.searchRow}>
+              <div className={styles.searchInput}>
+                <Icon name="search" size={20} style={{ color: 'var(--text-secondary)' }} />
+                <span style={{ color: 'var(--text-secondary)', fontSize: 14 }}>Search</span>
+              </div>
+              <div className={styles.sortDropdown}>
+                <span style={{ color: 'var(--text-secondary)', fontSize: 14 }}>Last viewed</span>
+                <Icon name="caret-down" size={20} style={{ color: 'var(--text-secondary)' }} />
+              </div>
+            </div>
+            <div className={styles.emptyState}>
+              <h4 className={styles.emptyStateTitle}>There are no services to display</h4>
+              <p className={styles.emptyStateDesc}>Create your first service to see data.</p>
+            </div>
+          </div>
+
+          {/* Workspaces empty */}
+          <div className={styles.servicesWidget}>
+            <div className={styles.widgetHeader}>
+              <h3 className={styles.widgetTitle}>Workspaces</h3>
+              <div className={styles.widgetHeaderActions}>
+                <button className={styles.headerLinkBtn}>Next-Gen WAF</button>
+              </div>
+            </div>
+            <div className={styles.searchRow}>
+              <div className={styles.searchInput}>
+                <Icon name="search" size={20} style={{ color: 'var(--text-secondary)' }} />
+                <span style={{ color: 'var(--text-secondary)', fontSize: 14 }}>Search</span>
+              </div>
+            </div>
+            <div className={styles.emptyState}>
+              <h4 className={styles.emptyStateTitle}>There are no workspaces to display</h4>
+              <p className={styles.emptyStateDesc}>Create your first workspace to see data.</p>
+            </div>
+          </div>
+
+          {/* Quick create */}
+          <QuickCreate onNavigate={onNavigate} onCreateService={onCreateService} />
+        </div>
+      </div>
+    </>
   );
 }
