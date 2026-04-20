@@ -136,25 +136,6 @@ function BarChart({ data, color = 'var(--text-action)', height = 80, width = 400
   );
 }
 
-function MultiLineChart({ series, height = 80, width = 400 }: { series: { data: number[]; color: string }[]; height?: number; width?: number }) {
-  const allVals = series.flatMap(s => s.data);
-  const max = Math.max(...allVals);
-  const min = Math.min(...allVals);
-  const range = max - min || 1;
-  return (
-    <svg viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" className={styles.chartSvg}>
-      {series.map((s, si) => {
-        const pts = s.data.map((v, i) => ({
-          x: (i / (s.data.length - 1)) * width,
-          y: 4 + (height - 8) - ((v - min) / range) * (height - 8),
-        }));
-        const linePoints = pts.map(p => `${p.x},${p.y}`).join(' ');
-        return <polyline key={si} points={linePoints} fill="none" stroke={s.color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />;
-      })}
-    </svg>
-  );
-}
-
 /* ─── Reusable UI Elements ─── */
 function FilterBar({ children }: { children: React.ReactNode }) {
   return <div className={styles.filterBar}>{children}</div>;

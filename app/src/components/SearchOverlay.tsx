@@ -92,7 +92,6 @@ export function SearchOverlay({ isOpen, onClose, onNavigate }: SearchOverlayProp
       }).map((s) => ({ id: s.name, name: s.name, serviceType: s.serviceType }))
     : [];
 
-  const results = pageResults;
 
   useEffect(() => {
     if (isOpen) {

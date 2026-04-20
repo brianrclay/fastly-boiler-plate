@@ -325,7 +325,7 @@ export function ServiceSummaryPage({ serviceName, pageVisible = true, onNavigate
 /* ─── Version toolbar with sticky behavior and switcher ─── */
 function VersionToolbar({ latestVersion, totalVersions }: { latestVersion: number; totalVersions: number }) {
   const [isSticky, setIsSticky] = useState(false);
-  const [showSwitcher, setShowSwitcher] = useState(false);
+
   const toolbarRef = useRef<HTMLDivElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
   const switcherDD = useDropdown();
@@ -1167,7 +1167,7 @@ function LoggingPage() {
 function VclPage() {
   const [activeTab, setActiveTab] = useState<'snippets' | 'custom' | 'complete'>('snippets');
 
-  const vclLines = [
+  const vclLines: { text: string; color?: string; highlight?: string }[] = [
     { text: '# Noticing changes to your VCL? The event log', color: 'green' },
     { text: '# (https://docs.fastly.com/en/guides/reviewing-service-activity-with-the-event-log)', color: 'green' },
     { text: "# in the web interface shows changes to your service's configurations and the", color: 'green' },
@@ -1224,7 +1224,7 @@ function VclPage() {
     { text: '    .port = "80";' },
     { text: '    .share_key = "ngrfSqoDLkLxShlCB25wP5";' },
     { text: '}' },
-  ] as const;
+  ];
 
   return (
     <div className={styles.configPageWrap}>
