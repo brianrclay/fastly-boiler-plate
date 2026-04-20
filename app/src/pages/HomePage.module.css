@@ -78,6 +78,29 @@
   background-color: var(--COLOR--action--surface--hover, #004e9e);
 }
 
+.createBtnSmall {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  padding: var(--spacing-3) var(--spacing-5);
+  background-color: var(--text-action);
+  color: white;
+  border-radius: var(--radius-md);
+  font-family: var(--font-family-inter);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  letter-spacing: 0.07px;
+  white-space: nowrap;
+  align-self: flex-start;
+  width: fit-content;
+  cursor: pointer;
+}
+
+.createBtnSmall:hover {
+  background-color: var(--COLOR--action--surface--hover, #004e9e);
+}
+
 /* ─── Dropdown ─── */
 .dropdownWrapper {
   position: relative;
@@ -1369,13 +1392,15 @@
   border: 1px solid var(--border-primary);
   border-radius: var(--radius-lg);
   overflow: hidden;
+  text-align: left;
 }
 
 .widgetHeader {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   padding: var(--spacing-6) var(--spacing-6) 0;
+  gap: var(--spacing-6);
 }
 
 .widgetHeaderActions {
@@ -1428,7 +1453,7 @@
   flex-direction: column;
   align-items: center;
   gap: var(--spacing-5);
-  padding: var(--spacing-8);
+  padding: var(--spacing-8) var(--spacing-6);
   text-align: center;
 }
 

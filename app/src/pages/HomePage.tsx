@@ -639,12 +639,12 @@ function BrandNewHome({ onNavigate, onCreateService }: { onNavigate?: (id: strin
             <div className={styles.getStartedItems}>
               <div className={styles.getStartedItem}>
                 <div className={styles.getStartedIcon}>
-                  <Icon name="cdn" size={20} />
+                  <Icon name="network-services-colorful" size={20} />
                 </div>
                 <div className={styles.getStartedContent}>
                   <h4 className={styles.getStartedItemTitle}>Create your first service</h4>
                   <p className={styles.getStartedItemDesc}>Deploy your application on the worlds fastest CDN.</p>
-                  <button className={styles.createBtn} onClick={onCreateService}>Create CDN service</button>
+                  <button className={styles.createBtnSmall} onClick={onCreateService}>Create CDN service</button>
                 </div>
               </div>
               <div className={styles.getStartedItem}>
@@ -688,7 +688,7 @@ function BrandNewHome({ onNavigate, onCreateService }: { onNavigate?: (id: strin
             <h3 className={styles.widgetTitle}>DDoS Protection metrics</h3>
             <span className={styles.metricsSubtext}>Data from the last 30 days</span>
             <div className={styles.promoBanner}>
-              <Icon name="help" size={24} style={{ color: 'var(--text-action)', flexShrink: 0 }} />
+              <Icon name="info-filled" size={24} style={{ color: 'var(--text-action)', flexShrink: 0 }} />
               <div className={styles.promoBannerContent}>
                 <h4 className={styles.promoBannerTitle}>Get started with DDoS Protection</h4>
                 <p className={styles.promoBannerDesc}>Automatic DDoS protection that keeps any application and API available and performant.</p>
@@ -702,7 +702,7 @@ function BrandNewHome({ onNavigate, onCreateService }: { onNavigate?: (id: strin
             <h3 className={styles.widgetTitle}>Next-Gen WAF metrics</h3>
             <span className={styles.metricsSubtext}>Data from the last 30 days</span>
             <div className={styles.promoBanner}>
-              <Icon name="help" size={24} style={{ color: 'var(--text-action)', flexShrink: 0 }} />
+              <Icon name="info-filled" size={24} style={{ color: 'var(--text-action)', flexShrink: 0 }} />
               <div className={styles.promoBannerContent}>
                 <h4 className={styles.promoBannerTitle}>Protect your applications and APIs</h4>
                 <p className={styles.promoBannerDesc}>Lorem ipsum nisi tristique accumsan condimentum urna tincidunt etiam at elit pretium amet turpis tellus.</p>
@@ -716,7 +716,7 @@ function BrandNewHome({ onNavigate, onCreateService }: { onNavigate?: (id: strin
             <h3 className={styles.widgetTitle}>TLS Certificate Status</h3>
             <span className={styles.metricsSubtext}>Data from the last 30 days</span>
             <div className={styles.promoBanner}>
-              <Icon name="help" size={24} style={{ color: 'var(--text-action)', flexShrink: 0 }} />
+              <Icon name="info-filled" size={24} style={{ color: 'var(--text-action)', flexShrink: 0 }} />
               <div className={styles.promoBannerContent}>
                 <h4 className={styles.promoBannerTitle}>Add a TLS certificate</h4>
                 <p className={styles.promoBannerDesc}>Lorem ipsum nisi tristique accumsan condimentum urna tincidunt etiam at elit pretium amet turpis tellus.</p>

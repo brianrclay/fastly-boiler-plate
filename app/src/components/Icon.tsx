@@ -96,6 +96,7 @@ const iconFileMap: Record<string, string> = {
   'arrow-up': '/icons/core/Arrow up.svg',
   'arrow-down': '/icons/core/Arrow down.svg',
   'move': '/icons/core/Move.svg',
+  'info-filled': '/icons/core/Info filled.svg',
   'help': '/icons/core/Help.svg',
   'bell': '/icons/navigation/Notifications.svg',
   'calendar': '/icons/core/Calendar.svg',
@@ -132,7 +133,7 @@ interface IconProps {
 }
 
 // Icons that should preserve their original fill colors (e.g., branded logos)
-const preserveColorIcons = new Set(['fastly-logo', 'security-colorful', 'notifications-empty', 'compute-colorful', 'network-services-colorful', 'image-optimizer-illustration', 'ddos-protection-illustration', 'platform-colorful', 'observability-colorful', 'cdn-colorful', 'next-gen-waf-colorful', 'ddos-protection-colorful', 'ddos-observer-colorful', 'bot-management-colorful', 'attention-filled', 'attention', 'devops-illustration', 'compatibility-2-illustration']);
+const preserveColorIcons = new Set(['fastly-logo', 'security-colorful', 'notifications-empty', 'compute-colorful', 'network-services-colorful', 'image-optimizer-illustration', 'ddos-protection-illustration', 'platform-colorful', 'observability-colorful', 'cdn-colorful', 'next-gen-waf-colorful', 'ddos-protection-colorful', 'ddos-observer-colorful', 'bot-management-colorful', 'attention-filled', 'attention', 'devops-illustration', 'compatibility-2-illustration', 'info-filled']);
 
 export function Icon({ name, size = 20, className, style }: IconProps) {
   const [svgContent, setSvgContent] = useState<string | null>(null);
