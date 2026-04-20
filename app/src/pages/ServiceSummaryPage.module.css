@@ -4,6 +4,7 @@
   min-height: 0;
   flex-direction: column;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .page {
@@ -2579,8 +2580,10 @@
   background-color: var(--surface-primary, white);
   border-bottom: 1px solid var(--border-primary);
   padding: var(--spacing-5) var(--spacing-7);
-  margin: 0 calc(-1 * var(--spacing-7));
-  width: calc(100% + var(--spacing-7) * 2);
+  width: 100vw;
+  margin-left: 50%;
+  transform: translateX(-50%);
+  box-sizing: border-box;
 }
 
 .versionToolbarSticky .versionToolbarActions {
