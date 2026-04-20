@@ -32,7 +32,7 @@ You need these installed on your computer:
 ### 2. Clone the repo
 
 ```bash
-git clone https://github.com/brianrclay/fastly-prototype-kit.git
+git clone https://github.com/fastly/product-prototypes.git
 cd fastly-prototype-kit
 ```
 
