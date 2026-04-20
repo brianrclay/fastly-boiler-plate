@@ -1395,7 +1395,7 @@
   text-align: left;
 }
 
-.widgetHeader {
+.emptyWidgetHeader {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;

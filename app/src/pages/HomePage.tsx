@@ -639,7 +639,7 @@ function BrandNewHome({ onNavigate, onCreateService }: { onNavigate?: (id: strin
             <div className={styles.getStartedItems}>
               <div className={styles.getStartedItem}>
                 <div className={styles.getStartedIcon}>
-                  <Icon name="network-services-colorful" size={20} />
+                  <Icon name="cdn" size={20} />
                 </div>
                 <div className={styles.getStartedContent}>
                   <h4 className={styles.getStartedItemTitle}>Create your first service</h4>
@@ -749,12 +749,8 @@ function BrandNewHome({ onNavigate, onCreateService }: { onNavigate?: (id: strin
         <div className={styles.colRight}>
           {/* Services empty */}
           <div className={styles.servicesWidget}>
-            <div className={styles.widgetHeader}>
+            <div className={styles.emptyWidgetHeader}>
               <h3 className={styles.widgetTitle}>Services</h3>
-              <div className={styles.widgetHeaderActions}>
-                <button className={styles.headerLinkBtn}>Compute</button>
-                <button className={styles.headerLinkBtn}>CDN</button>
-              </div>
             </div>
             <div className={styles.searchRow}>
               <div className={styles.searchInput}>
@@ -774,11 +770,8 @@ function BrandNewHome({ onNavigate, onCreateService }: { onNavigate?: (id: strin
 
           {/* Workspaces empty */}
           <div className={styles.servicesWidget}>
-            <div className={styles.widgetHeader}>
+            <div className={styles.emptyWidgetHeader}>
               <h3 className={styles.widgetTitle}>Workspaces</h3>
-              <div className={styles.widgetHeaderActions}>
-                <button className={styles.headerLinkBtn}>Next-Gen WAF</button>
-              </div>
             </div>
             <div className={styles.searchRow}>
               <div className={styles.searchInput}>
